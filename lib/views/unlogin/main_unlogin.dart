@@ -9,3 +9,14 @@ class MainUnlogin extends StatefulWidget {
   @override
   _MainUnloginState createState() => _MainUnloginState();
 }
+
+class _MainUnloginState extends State<MainUnlogin> {
+  List<dynamic> trainers = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    //fetchTrainers();
+  }
+}
