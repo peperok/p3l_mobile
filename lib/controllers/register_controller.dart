@@ -1,83 +1,53 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:p3lcoba/utils/constants.dart';
+import 'package:p3lcoba/views/main/homepage.dart';
 
 class RegisterController {
-  final TextEditingController fullNameController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController dobController = TextEditingController();
-  final TextEditingController addressController = TextEditingController();
 
-  Future<void> registerUser(BuildContext context) async {
-    String fullName = fullNameController.text.trim();
-    String email = emailController.text.trim();
-    String password = passwordController.text.trim();
-    String dob = dobController.text.trim();
-    String address = addressController.text.trim();
+  void handleRegister(BuildContext context) {
+    final String name = nameController.text.trim();
+    final String phone = phoneController.text.trim();
+    final String email = emailController.text.trim();
+    final String password = passwordController.text.trim();
 
-    final url = Uri.parse('https://darksalmon-oyster-681673.hostingersite.com/api/register');
-    final body = json.encode({
-      'full_name': fullName,
-      'email': email,
-      'password': password,
-      'dob': dob,
-      'address': address,
-    });
+    // Validasi sederhana (Anda bisa menambahkan validasi yang lebih kompleks)
+    if (name.isEmpty || phone.isEmpty || email.isEmpty || password.isEmpty) {
+      showPreviewMessage(context, "Mohon lengkapi semua field!");
+      return;
+    }
 
-    // Menampilkan loading indicator
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return Center(child: CircularProgressIndicator());
-      },
+    // Simulasi proses registrasi
+    // Di aplikasi nyata, Anda akan mengirim data ini ke API backend
+    print("Registrasi berhasil:");
+    print("Nama: $name");
+    print("No Telepon: $phone");
+    print("Email: $email");
+    print("Password: $password"); // Jangan simpan password plain-text di aplikasi nyata!
+
+    // Setelah registrasi berhasil (simulasi), arahkan ke Homepage
+    showPreviewMessage(context, "Registrasi berhasil! Selamat datang, $name.");
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => HomePage()),
     );
 
-    try {
-      final response = await http.post(
-        url,
-        body: body,
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-      );
-
-      Navigator.of(context).pop(); // Menutup loading indicator
-
-      if (response.statusCode == 201) {
-        final data = json.decode(response.body);
-        _showSnackBar(context, data['message']);
-        // Menggunakan rootNavigator untuk memastikan navigasi berjalan dengan benar
-        Navigator.of(context, rootNavigator: true).pushReplacementNamed('/login'); // Navigasi ke halaman login
-      } else if (response.statusCode == 422) {
-        final errors = json.decode(response.body)['message'];
-        if (errors is Map) {
-          String errorMessages = "";
-          errors.forEach((field, messages) {
-            errorMessages += "$field: ${messages.join(", ")}\n";
-          });
-          _showSnackBar(context, errorMessages.trim());
-        } else {
-          _showSnackBar(context, errors ?? "Validation error occurred.");
-        }
-      } else {
-        _showSnackBar(context, "Unexpected error occurred. Status: ${response.statusCode}");
-      }
-    } catch (e) {
-      Navigator.of(context).pop(); // Menutup loading indicator jika terjadi error
-      print("Error: $e");
-      _showSnackBar(context, "An error occurred. Please check your connection and try again.");
-    }
+    // Kosongkan field setelah registrasi
+    nameController.clear();
+    phoneController.clear();
+    emailController.clear();
+    passwordController.clear();
   }
 
-  void _showSnackBar(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.grey[600],
-      ),
-    );
+  void dispose() {
+    nameController.dispose();
+    phoneController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
   }
 }
