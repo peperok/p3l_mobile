@@ -92,8 +92,7 @@ class _HomePageState extends State<HomePage> {
                     IconButton(
                       icon: Icon(Icons.account_circle, color: Colors.white, size: 28),
                       onPressed: () {
-                        // Aksi ketika tombol profile ditekan
-                        print('Profile icon pressed');
+                        Navigator.pushNamed(context, '/profile');
                       },
                     ),
                   ],

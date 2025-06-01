@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:p3lcoba/controllers/login_controller.dart';
-import 'package:p3lcoba/utils/constants.dart'; // Import constants.dart untuk showPreviewMessage dan colorPrimary
-import '../unlogin/main_unlogin.dart';
+import 'package:p3lcoba/utils/constants.dart';
+import '../unlogin/main_unlogin.dart'; // Pastikan path ini benar
 
 class LoginPage extends StatefulWidget {
   @override
@@ -10,46 +10,52 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final LoginController _controller = LoginController();
-  bool _obscureText = true; // State untuk toggle visibility password
+  bool _obscureText = true;
+
+  // Default atau pilihan awal untuk Dropdown
+  UserRole? _selectedLoginUserRole = UserRole.pembeli; 
+
+  @override
+  void initState() {
+    super.initState();
+    // Inisialisasi controller dengan peran default saat pertama kali UI dimuat
+    _controller.setSelectedRole(_selectedLoginUserRole);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: colorPrimary, // Menggunakan colorPrimary untuk latar belakang utama
+      backgroundColor: colorPrimary,
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 80),
-            // Bagian atas: Icon, Hello, Welcome
+            const SizedBox(height: 80),
             Column(
               children: [
                 // Icon Keranjang / Logo Aplikasi
-                
-          
-                Text(
+                const Text(
                   "Hello!",
                   style: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
-                    color: colorTertiary, // Menggunakan colorTertiary untuk teks gelap
+                    color: colorTertiary,
                   ),
                 ),
-                SizedBox(height: 5),
+                const SizedBox(height: 5),
                 Text(
                   "Welcome to ReuseMart",
                   style: TextStyle(
                     fontSize: 18,
-                    color: colorTertiary.withOpacity(0.7), // Sedikit opacity untuk teks sekunder
+                    color: colorTertiary.withOpacity(0.7),
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 50),
-            // Card Login
+            const SizedBox(height: 50),
             Container(
               width: double.infinity,
-              decoration: BoxDecoration(
-                color: colorBackgroundLight, // Menggunakan colorBackgroundLight untuk card login
+              decoration: const BoxDecoration(
+                color: colorBackgroundLight,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(30),
                   topRight: Radius.circular(30),
@@ -60,32 +66,75 @@ class _LoginPageState extends State<LoginPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       "Login",
                       style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
-                        color: colorTertiary, // Menggunakan colorTertiary
+                        color: colorTertiary,
                       ),
                     ),
-                    SizedBox(height: 25),
+                    const SizedBox(height: 25),
+                    
+                    // --- Dropdown untuk Memilih Tipe Akun ---
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: Colors.grey.shade300),
+                      ),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton<UserRole>(
+                          isExpanded: true,
+                          value: _selectedLoginUserRole,
+                          hint: const Text("Pilih Jenis Akun"),
+                          onChanged: (UserRole? newValue) {
+                            setState(() {
+                              _selectedLoginUserRole = newValue;
+                              _controller.setSelectedRole(newValue); // Set tipe di controller
+                            });
+                          },
+                          items: const <DropdownMenuItem<UserRole>>[
+                            DropdownMenuItem<UserRole>(
+                              value: UserRole.pembeli,
+                              child: Text("Pembeli"),
+                            ),
+                            DropdownMenuItem<UserRole>(
+                              value: UserRole.penitip,
+                              child: Text("Penitip/Penjual"),
+                            ),
+                            DropdownMenuItem<UserRole>(
+                              value: UserRole.pegawai,
+                              child: Text("Pegawai"),
+                            ),
+                          ],
+                          icon: Icon(Icons.arrow_drop_down, color: Colors.grey[600]),
+                          style: TextStyle(color: colorTertiary, fontSize: 16),
+                          dropdownColor: Colors.white,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 15),
+                    // --- Akhir Dropdown ---
+
                     // Input Email
                     TextField(
                       controller: _controller.emailController,
                       decoration: InputDecoration(
                         hintText: "Email",
                         filled: true,
-                        fillColor: Colors.white, // Tetap putih untuk input field
+                        fillColor: Colors.white,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide.none,
                         ),
-                        contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-                        hintStyle: TextStyle(color: Colors.grey[600]), // Warna hint text
+                        contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                        hintStyle: TextStyle(color: Colors.grey[600]),
                       ),
-                      style: TextStyle(color: colorTertiary), // Warna teks input
+                      style: TextStyle(color: colorTertiary),
                     ),
-                    SizedBox(height: 15),
+                    const SizedBox(height: 15),
                     // Input Password
                     TextField(
                       controller: _controller.passwordController,
@@ -93,17 +142,17 @@ class _LoginPageState extends State<LoginPage> {
                       decoration: InputDecoration(
                         hintText: "Password",
                         filled: true,
-                        fillColor: Colors.white, // Tetap putih untuk input field
+                        fillColor: Colors.white,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide.none,
                         ),
-                        contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-                        hintStyle: TextStyle(color: Colors.grey[600]), // Warna hint text
+                        contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                        hintStyle: TextStyle(color: Colors.grey[600]),
                         suffixIcon: IconButton(
                           icon: Icon(
                             _obscureText ? Icons.visibility_off : Icons.visibility,
-                            color: Colors.grey[600], // Warna ikon visibility
+                            color: Colors.grey[600],
                           ),
                           onPressed: () {
                             setState(() {
@@ -112,9 +161,9 @@ class _LoginPageState extends State<LoginPage> {
                           },
                         ),
                       ),
-                      style: TextStyle(color: colorTertiary), // Warna teks input
+                      style: TextStyle(color: colorTertiary),
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     // Forgot Password
                     Align(
                       alignment: Alignment.centerRight,
@@ -125,13 +174,13 @@ class _LoginPageState extends State<LoginPage> {
                         child: Text(
                           "Forgot Password?",
                           style: TextStyle(
-                            color: colorTertiary.withOpacity(0.7), // Warna teks link
+                            color: colorTertiary.withOpacity(0.7),
                             fontSize: 14,
                           ),
                         ),
                       ),
                     ),
-                    SizedBox(height: 30),
+                    const SizedBox(height: 30),
                     // Tombol Login
                     SizedBox(
                       width: double.infinity,
@@ -140,25 +189,25 @@ class _LoginPageState extends State<LoginPage> {
                           _controller.handleLogin(context);
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: colorAccent, // Menggunakan colorAccent untuk tombol login
+                          backgroundColor: colorAccent,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          padding: EdgeInsets.symmetric(vertical: 15),
+                          padding: const EdgeInsets.symmetric(vertical: 15),
                         ),
-                        child: Text(
+                        child: const Text(
                           "Login",
                           style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold),
                         ),
                       ),
                     ),
-                    SizedBox(height: 30),
+                    const SizedBox(height: 30),
                     // Divider "or login with"
                     Row(
                       children: [
                         Expanded(
                           child: Divider(
-                            color: colorTertiary.withOpacity(0.4), // Warna divider
+                            color: colorTertiary.withOpacity(0.4),
                             thickness: 1,
                           ),
                         ),
@@ -166,76 +215,18 @@ class _LoginPageState extends State<LoginPage> {
                           padding: const EdgeInsets.symmetric(horizontal: 15.0),
                           child: Text(
                             "or login with",
-                            style: TextStyle(color: colorTertiary.withOpacity(0.8), fontSize: 16), // Warna teks
+                            style: TextStyle(color: colorTertiary.withOpacity(0.8), fontSize: 16),
                           ),
                         ),
                         Expanded(
                           child: Divider(
-                            color: colorTertiary.withOpacity(0.4), // Warna divider
+                            color: colorTertiary.withOpacity(0.4),
                             thickness: 1,
                           ),
                         ),
                       ],
                     ),
-                    SizedBox(height: 25),
-                    // Tombol Social Media
-                    // Row(
-                    //   mainAxisAlignment: MainAxisAlignment.center,
-                    //   children: [
-                    //     // Facebook Button
-                    //     InkWell(
-                    //       onTap: () {
-                    //         print('Login with Facebook');
-                    //       },
-                    //       child: Container(
-                    //         width: 50,
-                    //         height: 50,
-                    //         decoration: BoxDecoration(
-                    //           color: Colors.white,
-                    //           borderRadius: BorderRadius.circular(10),
-                    //           boxShadow: [
-                    //             BoxShadow(
-                    //               color: Colors.grey.withOpacity(0.2),
-                    //               spreadRadius: 2,
-                    //               blurRadius: 5,
-                    //               offset: Offset(0, 3),
-                    //             ),
-                    //           ],
-                    //         ),
-                    //         child: Center(
-                    //           child: Icon(Icons.facebook, color: Colors.blue[800], size: 30), // Facebook icon often uses its own blue
-                    //         ),
-                    //       ),
-                    //     ),
-                    //     SizedBox(width: 25),
-                    //     // Google Button
-                    //     InkWell(
-                    //       onTap: () {
-                    //         print('Login with Google');
-                    //       },
-                    //       child: Container(
-                    //         width: 50,
-                    //         height: 50,
-                    //         decoration: BoxDecoration(
-                    //           color: Colors.white,
-                    //           borderRadius: BorderRadius.circular(10),
-                    //           boxShadow: [
-                    //             BoxShadow(
-                    //               color: Colors.grey.withOpacity(0.2),
-                    //               spreadRadius: 2,
-                    //               blurRadius: 5,
-                    //               offset: Offset(0, 3),
-                    //             ),
-                    //           ],
-                    //         ),
-                    //         child: Center(
-                    //           child: Image.asset('assets/google.png', height: 28), // Path ke logo Google
-                    //         ),
-                    //       ),
-                    //     ),
-                    //   ],
-                    // ),
-                    // SizedBox(height: 50),
+                    const SizedBox(height: 25),
                     // Don't Have account? Register
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -244,7 +235,7 @@ class _LoginPageState extends State<LoginPage> {
                           "Don't Have account?",
                           style: TextStyle(color: colorTertiary.withOpacity(0.7), fontSize: 15),
                         ),
-                        SizedBox(width: 5),
+                        const SizedBox(width: 5),
                         GestureDetector(
                           onTap: () {
                             Navigator.pushNamed(context, '/register');
@@ -252,7 +243,7 @@ class _LoginPageState extends State<LoginPage> {
                           child: Text(
                             "Register",
                             style: TextStyle(
-                              color: colorAccent, // Menggunakan colorAccent untuk link Register
+                              color: colorAccent,
                               fontWeight: FontWeight.bold,
                               fontSize: 15,
                             ),
@@ -260,7 +251,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     // Link "wanna take a look?"
                     Align(
                       alignment: Alignment.center,
@@ -274,7 +265,7 @@ class _LoginPageState extends State<LoginPage> {
                         child: Text(
                           "wanna take a look?",
                           style: TextStyle(
-                            color: colorAccent, // Menggunakan colorAccent
+                            color: colorAccent,
                             decoration: TextDecoration.underline,
                             fontSize: 14,
                           ),
