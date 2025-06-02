@@ -3,6 +3,7 @@ plugins {
     id "kotlin-android"
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id "dev.flutter.flutter-gradle-plugin"
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -41,4 +42,25 @@ android {
 
 flutter {
     source = "../.."
+}
+
+dependencies {
+    // Import the Firebase BoM (Bill of Materials)
+    // Ketika menggunakan BoM, kamu tidak perlu menentukan versi untuk dependensi Firebase lainnya.
+    implementation platform('com.google.firebase:firebase-bom:33.14.0') // Gunakan versi yang direkomendasikan Firebase
+
+    // Tambahkan dependensi untuk Firebase Cloud Messaging
+    implementation 'com.google.firebase:firebase-messaging'
+
+    // Jika kamu menambahkan Firebase SDK lainnya, tambahkan di sini juga, contoh:
+    // implementation 'com.google.firebase:firebase-analytics'
+    // implementation 'com.google.firebase:firebase-auth'
+    // implementation 'com.google.firebase:firebase-firestore'
+
+    // Dependensi lain yang mungkin sudah ada di projectmu, biarkan saja
+    // Contoh:
+    // implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    // implementation "androidx.core:core-ktx:1.10.1" // Atau versi yang lebih baru
+    // implementation "androidx.appcompat:appcompat:1.6.1"
+    // implementation "com.google.android.material:material:1.9.0"
 }

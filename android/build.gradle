@@ -1,3 +1,22 @@
+// android/build.gradle
+
+buildscript { // <<< TAMBAHKAN BLOCK INI
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        // Ini adalah dependensi untuk Android Gradle Plugin.
+        // Versi ini mungkin sudah ada atau sedikit berbeda di projectmu (contoh: '7.3.0').
+        // Jangan diubah kecuali ada instruksi spesifik.
+        classpath 'com.android.tools.build:gradle:7.3.0' 
+
+        // <<< INI ADALAH BARIS UNTUK PLUGIN GOOGLE SERVICES >>>
+        // Gunakan versi terbaru yang direkomendasikan Firebase, contoh: '4.4.2'
+        classpath 'com.google.gms:google-services:4.4.2' 
+    }
+} // <<< AKHIR BLOCK INI
+
 allprojects {
     repositories {
         google()
