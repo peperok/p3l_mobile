@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:p3lcoba/utils/constants.dart'; // Import warna kustom
-import 'package:p3lcoba/models/product.dart'; // Import model produk
-import 'package:p3lcoba/views/auth/login.dart'; // Sesuaikan path ke login.dart
+import 'package:http/http.dart' as http; // Import http
+import 'dart:convert'; // Import json
+import 'package:p3lcoba/utils/constants.dart';
+import 'package:p3lcoba/models/barang.dart'; // Import model Barang
+import 'package:p3lcoba/views/auth/login.dart';
+import 'package:p3lcoba/views/main/barang_detail_page.dart';
 
 class MainUnlogin extends StatefulWidget {
   @override
@@ -9,33 +12,47 @@ class MainUnlogin extends StatefulWidget {
 }
 
 class _MainUnloginState extends State<MainUnlogin> {
-  // Contoh data untuk kategori (Anda bisa menggantinya dengan data dari API)
+  // Contoh data untuk kategori (ini masih dummy, bisa dihubungkan ke backend nanti)
   final List<String> categories = [
-    'Elektronik',
-    'Pakaian',
-    'Buku',
-    'Perabotan',
-    'Mainan',
-    'Olahraga',
-    'Otomotif',
-    'Seni',
-    'Kecantikan',
-    'Lain-lain',
+    'Elektronik', 'Pakaian', 'Buku', 'Perabotan', 'Mainan',
+    'Olahraga', 'Otomotif', 'Seni', 'Kecantikan', 'Lain-lain',
   ];
 
-  // Contoh data untuk produk (Anda bisa menggantinya dengan data dari API)
-  final List<Product> products = [
-    Product(id: '1', name: 'Laptop Bekas', imageUrl: 'assets/placeholder_product.png', price: 3500000),
-    Product(id: '2', name: 'Kemeja Batik', imageUrl: 'assets/placeholder_product.png', price: 75000),
-    Product(id: '3', name: 'Novel Fiksi', imageUrl: 'assets/placeholder_product.png', price: 40000),
-    Product(id: '4', name: 'Meja Belajar', imageUrl: 'assets/placeholder_product.png', price: 200000),
-    Product(id: '5', name: 'Action Figure', imageUrl: 'assets/placeholder_product.png', price: 150000),
-    Product(id: '6', name: 'Raket Badminton', imageUrl: 'assets/placeholder_product.png', price: 120000),
-    Product(id: '7', name: 'Ban Mobil', imageUrl: 'assets/placeholder_product.png', price: 500000),
-    Product(id: '8', name: 'Lukisan Abstrak', imageUrl: 'assets/placeholder_product.png', price: 300000),
-  ];
+  late Future<List<Barang>> _futureBarang; // Future untuk menampung data barang
 
-  // Fungsi untuk navigasi ke halaman login
+  @override
+  void initState() {
+    super.initState();
+    _futureBarang = _fetchBarang(); // Panggil fungsi untuk mengambil data barang
+  }
+
+  // Fungsi untuk mengambil data barang dari backend
+  Future<List<Barang>> _fetchBarang() async {
+    // <<< PENTING: Ganti dengan URL backend lokalmu (atau IP Hostinger jika sudah deploy) >>>
+    // Jika emulator Android: http://10.0.2.2:8000
+    // Jika HP Fisik: http://IP_KOMPUTER_KAMU:8000
+    final url = Uri.parse('http://10.0.2.2:8000/api/barang'); // Contoh untuk Android Emulator
+
+    try {
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseBody = json.decode(response.body);
+        if (responseBody['data'] is List) {
+          List<dynamic> barangJson = responseBody['data'];
+          return barangJson.map((json) => Barang.fromJson(json)).toList();
+        } else {
+          throw Exception('Data is not a list in API response: ${responseBody['data']}');
+        }
+      } else {
+        throw Exception('Failed to load barang: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error fetching barang for unlogin page: $e');
+      throw Exception('Gagal terhubung ke server atau memuat produk: $e');
+    }
+  }
+
   void _navigateToLogin() {
     Navigator.push(
       context,
@@ -46,12 +63,12 @@ class _MainUnloginState extends State<MainUnlogin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: colorBackgroundLight, // Warna latar belakang terang untuk body
+      backgroundColor: colorBackgroundLight,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(120.0), // Tinggi AppBar yang lebih besar
+        preferredSize: const Size.fromHeight(120.0),
         child: AppBar(
-          backgroundColor: colorSecondary, // Warna AppBar atas
-          elevation: 0, // Hilangkan shadow
+          backgroundColor: colorSecondary,
+          elevation: 0,
           flexibleSpace: Container(
             padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 10, left: 16, right: 16),
             child: Column(
@@ -60,11 +77,10 @@ class _MainUnloginState extends State<MainUnlogin> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // Search bar
                     Expanded(
-                      child: GestureDetector( // Tambahkan GestureDetector di sini
-                        onTap: _navigateToLogin, // Ketika search bar diklik, pindah ke login
-                        child: AbsorbPointer( // Mencegah keyboard muncul atau input teks
+                      child: GestureDetector(
+                        onTap: _navigateToLogin,
+                        child: AbsorbPointer(
                           child: Container(
                             height: 40,
                             decoration: BoxDecoration(
@@ -76,34 +92,26 @@ class _MainUnloginState extends State<MainUnlogin> {
                                 hintText: 'Search...',
                                 prefixIcon: Icon(Icons.search, color: Colors.grey[600]),
                                 border: InputBorder.none,
-                                contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                                contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
                               ),
-                              // onSubmitted: (query) { // Ini akan dinonaktifkan oleh AbsorbPointer
-                              //   print('Searching for: $query');
-                              // },
                             ),
                           ),
                         ),
                       ),
                     ),
-                    SizedBox(width: 10),
-                    // Shopping Cart Icon
+                    const SizedBox(width: 10),
                     IconButton(
-                      icon: Icon(Icons.shopping_cart, color: Colors.white, size: 28),
-                      onPressed: _navigateToLogin, // Ketika tombol cart ditekan, pindah ke login
+                      icon: const Icon(Icons.shopping_cart, color: Colors.white, size: 28),
+                      onPressed: _navigateToLogin,
                     ),
-                    // Profile Icon
                     IconButton(
-                      icon: Icon(Icons.account_circle, color: Colors.white, size: 28),
-                      onPressed: _navigateToLogin, // Ketika tombol profile ditekan, pindah ke login
+                      icon: const Icon(Icons.account_circle, color: Colors.white, size: 28),
+                      onPressed: _navigateToLogin,
                     ),
                   ],
                 ),
-                SizedBox(height: 10), // Jarak antara search bar dan banner
-                // Area untuk banner atau promo
-                Container(
-                  height: 0, // Placeholder, akan ditambahkan nanti jika ada banner di bawah search bar
-                ),
+                const SizedBox(height: 10),
+                const SizedBox(height: 0),
               ],
             ),
           ),
@@ -113,21 +121,15 @@ class _MainUnloginState extends State<MainUnlogin> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Banner Besar (sesuai gambar)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-              child: GestureDetector( // Tambahkan GestureDetector di sini
-                onTap: _navigateToLogin, // Ketika banner diklik, pindah ke login
+              child: GestureDetector(
+                onTap: _navigateToLogin,
                 child: Container(
-                  height: 180, // Tinggi banner
+                  height: 180,
                   decoration: BoxDecoration(
-                    color: Colors.grey[300], // Warna placeholder untuk banner
+                    color: Colors.grey[300],
                     borderRadius: BorderRadius.circular(10),
-                    // Anda bisa menambahkan image di sini:
-                    // image: DecorationImage(
-                    //   image: AssetImage('assets/placeholder_banner.png'),
-                    //   fit: BoxFit.cover,
-                    // ),
                   ),
                   child: Center(
                     child: Text(
@@ -142,8 +144,7 @@ class _MainUnloginState extends State<MainUnlogin> {
                 ),
               ),
             ),
-            SizedBox(height: 10),
-            // Bagian Kategori
+            const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Row(
@@ -158,43 +159,42 @@ class _MainUnloginState extends State<MainUnlogin> {
                     ),
                   ),
                   GestureDetector(
-                    onTap: _navigateToLogin, // Ketika "See All" ditekan, pindah ke login
-                    child: Text(
+                    onTap: _navigateToLogin,
+                    child: const Text(
                       'See All',
                       style: TextStyle(
                         fontSize: 16,
-                        color: Colors.blueAccent, // Menggunakan warna default Flutter untuk link
+                        color: Colors.blueAccent,
                       ),
                     ),
                   ),
                 ],
               ),
             ),
-            SizedBox(height: 10),
-            // Daftar Kategori yang bisa di-scroll horizontal
-            Container(
-              height: 100, // Tinggi untuk daftar kategori
+            const SizedBox(height: 10),
+            SizedBox(
+              height: 100,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 itemCount: categories.length,
                 itemBuilder: (context, index) {
                   return Padding(
                     padding: const EdgeInsets.only(right: 10.0),
-                    child: GestureDetector( // Tambahkan GestureDetector di sini
-                      onTap: _navigateToLogin, // Ketika kategori diklik, pindah ke login
+                    child: GestureDetector(
+                      onTap: _navigateToLogin,
                       child: Column(
                         children: [
                           Container(
                             width: 60,
                             height: 60,
                             decoration: BoxDecoration(
-                              color: Colors.grey[300], // Warna placeholder untuk ikon kategori
+                              color: Colors.grey[300],
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            child: Icon(Icons.category, color: Colors.grey[700]), // Contoh ikon
+                            child: Icon(Icons.category, color: Colors.grey[700]),
                           ),
-                          SizedBox(height: 5),
+                          const SizedBox(height: 5),
                           Text(
                             categories[index],
                             style: TextStyle(
@@ -210,79 +210,119 @@ class _MainUnloginState extends State<MainUnlogin> {
                 },
               ),
             ),
-            SizedBox(height: 20),
-            // Grid produk yang dijual
+            const SizedBox(height: 20),
+            
+            // Grid produk yang diambil dari backend
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: GridView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 10.0,
-                  mainAxisSpacing: 10.0,
-                  childAspectRatio: 0.75,
-                ),
-                itemCount: products.length,
-                itemBuilder: (context, index) {
-                  final product = products[index];
-                  return Card(
-                    color: Colors.white,
-                    elevation: 2,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: InkWell(
-                      onTap: _navigateToLogin, // Ketika produk ditekan, pindah ke login
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.grey[200], // Placeholder gambar produk
-                                borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
-                              ),
-                              child: Center(
-                                child: Icon(Icons.image, size: 50, color: Colors.grey[500]),
-                              ),
-                            ),
+              child: FutureBuilder<List<Barang>>( // Menggunakan FutureBuilder
+                future: _futureBarang,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text(
+                          'Error: ${snapshot.error}',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ),
+                    );
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Text('Tidak ada barang tersedia saat ini.'),
+                      ),
+                    );
+                  } else {
+                    return GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 10.0,
+                        mainAxisSpacing: 10.0,
+                        childAspectRatio: 0.75,
+                      ),
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (context, index) {
+                        final barang = snapshot.data![index];
+                        return Card(
+                          color: Colors.white,
+                          elevation: 2,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
+                          child: InkWell(
+                            onTap: () {
+                              // Tetap bisa melihat detail barang tanpa login
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => BarangDetailPage(barang: barang),
+                                ),
+                              );
+                            },
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  product.name,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                    color: colorTertiary,
+                                Expanded(
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[200],
+                                      borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
+                                      image: DecorationImage(
+                                        image: NetworkImage(barang.imageUrl),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    child: barang.imageUrl.isEmpty // Fallback for empty image URL
+                                        ? Center(child: Icon(Icons.image, size: 50, color: Colors.grey[500]))
+                                        : null,
                                   ),
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
                                 ),
-                                SizedBox(height: 4),
-                                Text(
-                                  'Rp ${product.price.toInt().toStringAsFixed(0)}', // Format harga
-                                  style: TextStyle(
-                                    color: Colors.green[700],
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        barang.namaBarang,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                          color: colorTertiary,
+                                        ),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        'Rp ${barang.hargaBarang.toInt().toStringAsFixed(0)}',
+                                        style: TextStyle(
+                                          color: Colors.green[700],
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                  );
+                        );
+                      },
+                    );
+                  }
                 },
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
           ],
         ),
       ),
