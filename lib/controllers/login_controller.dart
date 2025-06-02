@@ -60,8 +60,8 @@ class LoginController {
     // menerima field dengan nama yang sama untuk email dan password.
     // Jika tidak, Anda perlu menyesuaikan 'email_pembeli' dan 'pass_pembeli' berdasarkan 'selectedRole'.
     final body = json.encode({
-      'email_pembeli': email,   // Asumsi nama field yang konsisten
-      'pass_pembeli': password, // Asumsi nama field yang konsisten
+      'email': email,   // Asumsi nama field yang konsisten
+      'password': password, // Asumsi nama field yang konsisten
     });
 
     try {
@@ -85,9 +85,7 @@ class LoginController {
                                    ?? data['detail']['nama_penitip'] 
                                    ?? data['detail']['nama_pegawai']
                                    ?? 'Nama Pengguna'; // Default jika tidak ditemukan
-          UserSession.userEmail = data['detail']['email_pembeli'] 
-                                ?? data['detail']['email_penitip'] 
-                                ?? data['detail']['email_pegawai']
+          UserSession.userEmail = data['detail']['email'] 
                                 ?? 'email@example.com'; // Default jika tidak ditemukan
         }
         
