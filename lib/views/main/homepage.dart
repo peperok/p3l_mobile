@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -24,6 +25,25 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+
+    
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    print('Foreground Message: ${message.notification?.title} - ${message.notification?.body}');
+    // Tampilkan popup/snackbar
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('${message.notification?.title}: ${message.notification?.body}'),
+      ),
+    );
+  });
+
+  FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+    // Handle jika app dibuka dari notif
+    print('App dibuka dari notif: ${message.notification?.title}');
+  });
+
+
+
     _futureBarang = _fetchBarang();
   }
 

@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:firebase_messaging/firebase_messaging.dart';
 
-import 'user_session.dart'; // Pastikan file ini ada dan diimport
+import 'user_session.dart';
 
 enum UserRole {
   pembeli,
-  penitip, // Termasuk penjual
+  penitip,
   pegawai,
 }
 
@@ -14,10 +15,8 @@ class LoginController {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  // Variabel untuk menyimpan jenis peran pengguna yang dipilih dari UI
-  UserRole? selectedRole; 
+  UserRole? selectedRole;
 
-  // Fungsi untuk mengatur peran pengguna yang dipilih
   void setSelectedRole(UserRole? role) {
     selectedRole = role;
   }
@@ -37,7 +36,6 @@ class LoginController {
     }
 
     String endpoint = '';
-    // Tentukan endpoint berdasarkan peran pengguna yang dipilih
     switch (selectedRole) {
       case UserRole.pembeli:
         endpoint = 'loginPembeli';
@@ -53,15 +51,11 @@ class LoginController {
         return;
     }
 
-    final url = Uri.parse('http://10.0.2.2:8000/api/loginPembeli'); 
+    final url = Uri.parse('http://10.0.2.2:8000/api/$endpoint');
 
-    // PENTING: Nama keys di sini harus sama dengan yang diharapkan oleh masing-masing controller di backend.
-    // Asumsi: Semua controller backend (PembeliController, PenitipController, PegawaiController)
-    // menerima field dengan nama yang sama untuk email dan password.
-    // Jika tidak, Anda perlu menyesuaikan 'email_pembeli' dan 'pass_pembeli' berdasarkan 'selectedRole'.
     final body = json.encode({
-      'email': email,   // Asumsi nama field yang konsisten
-      'password': password, // Asumsi nama field yang konsisten
+      'email': email,
+      'password': password,
     });
 
     try {
@@ -75,26 +69,56 @@ class LoginController {
 
       if (response.statusCode == 200) {
         _showSnackBar(context, data['message']);
-        
-        // Simpan UserSession: ID, Nama Lengkap, Email, dan TIPE PENGGUNA
-        // Pastikan struktur respons backend konsisten (ada 'detail' dengan 'id', 'nama', 'email').
+
         if (data['detail'] != null) {
           UserSession.userId = data['detail']['id'];
-          // Gunakan null-aware operator ?? untuk mencoba beberapa nama field
-          UserSession.userFullName = data['detail']['nama_pembeli'] 
-                                   ?? data['detail']['nama_penitip'] 
-                                   ?? data['detail']['nama_pegawai']
-                                   ?? 'Nama Pengguna'; // Default jika tidak ditemukan
-          UserSession.userEmail = data['detail']['email'] 
-                                ?? 'email@example.com'; // Default jika tidak ditemukan
+          UserSession.userFullName = data['detail']['nama_pembeli'] ??
+              data['detail']['nama_penitip'] ??
+              data['detail']['nama_pegawai'] ??
+              'Nama Pengguna';
+          UserSession.userEmail = data['detail']['email'] ?? 'email@example.com';
+          UserSession.userType = selectedRole.toString().split('.').last;
+
+          // ====== TAMBAHAN UNTUK ROLE NAMA PEGAWAI (kurir/hunter) ======
+          if (selectedRole == UserRole.pegawai) {
+            final role = data['detail']['role'];
+            if (role != null && role['nama_role'] != null) {
+              UserSession.userRoleName = role['nama_role'].toLowerCase();
+            }
+          }
+
+          await UserSession.saveSession();
         }
-        
-        // Simpan TIPE PENGGUNA yang berhasil login
-        UserSession.userType = selectedRole.toString().split('.').last; 
 
-        await UserSession.saveSession();
+        // ============ Kirim FCM Token ============
+        final fcmToken = await FirebaseMessaging.instance.getToken();
+        if (fcmToken != null) {
+          print("FCM token didapat: $fcmToken");
 
-        Navigator.pushReplacementNamed(context, '/home'); 
+          await http.post(
+            Uri.parse('http://10.0.2.2:8000/api/fcm-token'),
+            headers: {'Content-Type': 'application/json'},
+            body: json.encode({
+              'id': UserSession.userId,
+              'role': UserSession.userType,
+              'token': fcmToken,
+            }),
+          );
+        }
+
+        // ============ Routing berdasarkan role ============
+        if (selectedRole == UserRole.pegawai) {
+          final role = UserSession.userRoleName;
+          if (role == 'kurir') {
+            Navigator.pushReplacementNamed(context, '/homeKurir');
+          } else if (role == 'hunter') {
+            Navigator.pushReplacementNamed(context, '/homeHunter');
+          } else {
+            Navigator.pushReplacementNamed(context, '/homePegawai');
+          }
+        } else {
+          Navigator.pushReplacementNamed(context, '/home');
+        }
       } else {
         _showSnackBar(context, data['message'] ?? "Login gagal! Terjadi kesalahan.");
       }
