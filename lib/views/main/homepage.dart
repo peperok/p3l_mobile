@@ -1,9 +1,10 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
+// Tambahkan import jika belum
 import 'package:flutter/material.dart';
 import 'package:p3lcoba/models/barang.dart';
 import 'package:p3lcoba/utils/constants.dart';
 import 'package:p3lcoba/views/main/barang_detail_page.dart';
 import 'package:p3lcoba/controllers/barang_controller.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -31,20 +32,16 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print(
-          'Foreground Message: ${message.notification?.title} - ${message.notification?.body}');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-              '${message.notification?.title}: ${message.notification?.body}'),
-        ),
+            content: Text(
+                '${message.notification?.title}: ${message.notification?.body}')),
       );
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print('App dibuka dari notif: ${message.notification?.title}');
+      print('Opened from notification: ${message.notification?.title}');
     });
 
     _futureBarang = BarangController.getAllBarang();
@@ -65,48 +62,42 @@ class _HomePageState extends State<HomePage> {
               left: 16,
               right: 16,
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Container(
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: TextField(
-                          decoration: InputDecoration(
-                            hintText: 'Search...',
-                            prefixIcon:
-                                Icon(Icons.search, color: Colors.grey[600]),
-                            border: InputBorder.none,
-                            contentPadding: const EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 10),
-                          ),
-                          onSubmitted: (query) {
-                            print('Searching for: $query');
-                          },
-                        ),
+                Expanded(
+                  child: Container(
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        hintText: 'Search...',
+                        prefixIcon: Icon(Icons.search, color: Colors.grey[600]),
+                        border: InputBorder.none,
+                        contentPadding: const EdgeInsets.symmetric(
+                            vertical: 8, horizontal: 10),
                       ),
-                    ),
-                    const SizedBox(width: 10),
-                    IconButton(
-                      icon: const Icon(Icons.shopping_cart,
-                          color: Colors.white, size: 28),
-                      onPressed: () {},
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.account_circle,
-                          color: Colors.white, size: 28),
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/profile');
+                      onSubmitted: (query) {
+                        print('Searching for: $query');
                       },
                     ),
-                  ],
+                  ),
+                ),
+                const SizedBox(width: 10),
+                IconButton(
+                  icon: const Icon(Icons.shopping_cart,
+                      color: Colors.white, size: 28),
+                  onPressed: () {},
+                ),
+                IconButton(
+                  icon: const Icon(Icons.account_circle,
+                      color: Colors.white, size: 28),
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/profile');
+                  },
                 ),
               ],
             ),
@@ -117,9 +108,9 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Promo
             Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+              padding: const EdgeInsets.all(16.0),
               child: Container(
                 height: 180,
                 decoration: BoxDecoration(
@@ -130,35 +121,27 @@ class _HomePageState extends State<HomePage> {
                   child: Text(
                     'Promo Eksklusif untuk Member!',
                     style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey[700],
-                    ),
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey[700]),
                   ),
                 ),
               ),
             ),
-            const SizedBox(height: 10),
+
+            // Category
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    'Category',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: colorTertiary,
-                    ),
-                  ),
-                  const Text(
-                    'See All',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.blueAccent,
-                    ),
-                  ),
+                  Text('Category',
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: colorTertiary)),
+                  const Text('See All',
+                      style: TextStyle(fontSize: 16, color: Colors.blueAccent)),
                 ],
               ),
             ),
@@ -178,20 +161,15 @@ class _HomePageState extends State<HomePage> {
                           width: 60,
                           height: 60,
                           decoration: BoxDecoration(
-                            color: Colors.grey[300],
-                            borderRadius: BorderRadius.circular(10),
-                          ),
+                              color: Colors.grey[300],
+                              borderRadius: BorderRadius.circular(10)),
                           child: Icon(Icons.category, color: Colors.grey[700]),
                         ),
                         const SizedBox(height: 5),
-                        Text(
-                          categories[index],
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: colorTertiary,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
+                        Text(categories[index],
+                            style:
+                                TextStyle(fontSize: 12, color: colorTertiary),
+                            textAlign: TextAlign.center),
                       ],
                     ),
                   );
@@ -199,16 +177,74 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             const SizedBox(height: 20),
+
+            // Merchandise section
+            // ===== Section Merchandise dengan Tombol Lihat Semua =====
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Text(
-                "Rekomendasi untuk Anda",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: colorTertiary,
-                ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Merchandise',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: colorTertiary,
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, '/merchandise');
+                    },
+                    child: const Text(
+                      'See All',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.blueAccent,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
               ),
+            ),
+            const SizedBox(height: 10),
+
+            SizedBox(
+              height: 150,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                children: [
+                  _buildMerchCard(
+                    imageUrl: 'https://via.placeholder.com/150?text=Merch+1',
+                    name: 'Tumbler ReuseMart',
+                    stock: 25,
+                  ),
+                  _buildMerchCard(
+                    imageUrl: 'https://via.placeholder.com/150?text=Merch+2',
+                    name: 'Totebag Ramah Lingkungan',
+                    stock: 12,
+                  ),
+                  _buildMerchCard(
+                    imageUrl: 'https://via.placeholder.com/150?text=Merch+3',
+                    name: 'Sticker Pack',
+                    stock: 50,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // Produk Rekomendasi
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Text('Rekomendasi untuk Anda',
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: colorTertiary)),
             ),
             const SizedBox(height: 16),
             FutureBuilder<List<Barang>>(
@@ -218,22 +254,11 @@ class _HomePageState extends State<HomePage> {
                   return const Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
                   return Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Text(
-                        'Error: ${snapshot.error}',
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(color: Colors.red),
-                      ),
-                    ),
-                  );
+                      child: Text('Error: ${snapshot.error}',
+                          style: const TextStyle(color: Colors.red)));
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return const Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(16.0),
-                      child: Text('Tidak ada barang tersedia saat ini.'),
-                    ),
-                  );
+                      child: Text('Tidak ada barang tersedia saat ini.'));
                 } else {
                   final barangList = snapshot.data!;
                   return GridView.builder(
@@ -253,18 +278,15 @@ class _HomePageState extends State<HomePage> {
                       return GestureDetector(
                         onTap: () {
                           Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  BarangDetailPage(barang: barang),
-                            ),
-                          );
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      BarangDetailPage(barang: barang)));
                         },
                         child: Card(
                           elevation: 3,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
+                              borderRadius: BorderRadius.circular(10)),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -278,9 +300,8 @@ class _HomePageState extends State<HomePage> {
                                     width: double.infinity,
                                     errorBuilder: (context, error, stackTrace) {
                                       return const Center(
-                                        child: Icon(Icons.broken_image,
-                                            size: 50, color: Colors.grey),
-                                      );
+                                          child: Icon(Icons.broken_image,
+                                              size: 50, color: Colors.grey));
                                     },
                                   ),
                                 ),
@@ -295,19 +316,17 @@ class _HomePageState extends State<HomePage> {
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                        color: colorTertiary,
-                                      ),
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                          color: colorTertiary),
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
                                       "Rp ${barang.hargaBarang.toStringAsFixed(0)}",
                                       style: TextStyle(
-                                        fontSize: 14,
-                                        color: colorAccent,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                          fontSize: 14,
+                                          color: colorAccent,
+                                          fontWeight: FontWeight.bold),
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
@@ -315,9 +334,8 @@ class _HomePageState extends State<HomePage> {
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.grey[600],
-                                      ),
+                                          fontSize: 12,
+                                          color: Colors.grey[600]),
                                     ),
                                   ],
                                 ),
@@ -332,6 +350,57 @@ class _HomePageState extends State<HomePage> {
               },
             ),
             const SizedBox(height: 20),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ===== Widget builder untuk merchandise
+  Widget _buildMerchCard(
+      {required String imageUrl, required String name, required int stock}) {
+    return Container(
+      width: 140,
+      margin: const EdgeInsets.only(right: 10),
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        elevation: 2,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(10)),
+              child: Image.network(
+                imageUrl,
+                height: 100,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return const Center(
+                      child: Icon(Icons.broken_image,
+                          size: 40, color: Colors.grey));
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(name,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                          color: colorTertiary)),
+                  const SizedBox(height: 4),
+                  Text('Stok: $stock',
+                      style: TextStyle(fontSize: 12, color: Colors.grey[700])),
+                ],
+              ),
+            ),
           ],
         ),
       ),
