@@ -5,6 +5,8 @@ import 'dart:convert';
 import 'package:p3lcoba/models/barang.dart';
 import 'package:p3lcoba/utils/constants.dart';
 import 'package:p3lcoba/views/main/barang_detail_page.dart';
+import 'package:p3lcoba/components/bottomnavbar.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -160,6 +162,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
+            
             const SizedBox(height: 10),
 
             // Bagian Kategori
@@ -372,6 +375,7 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
+      
     );
   }
 }
