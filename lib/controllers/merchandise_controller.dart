@@ -23,7 +23,7 @@ class MerchandiseController {
   }
 
   static Future<Merchandise?> getMerchById(int id) async {
-    final response = await http.get(Uri.parse('$baseUrl/search/$id'));
+    final response = await http.get(Uri.parse('$baseUrl/$id'));
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> jsonResponse = json.decode(response.body);
