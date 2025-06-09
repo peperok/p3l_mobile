@@ -36,7 +36,8 @@ class MerchandisePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Daftar Merchandise', style: TextStyle(color: Colors.white)),
+        title: const Text('Daftar Merchandise',
+            style: TextStyle(color: Colors.white)),
         backgroundColor: const Color(0xFF6D4C41),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
@@ -54,19 +55,22 @@ class MerchandisePage extends StatelessWidget {
           itemBuilder: (context, index) {
             final merch = merchList[index];
             return Card(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
               elevation: 3,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
                     child: ClipRRect(
-                      borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
+                      borderRadius:
+                          const BorderRadius.vertical(top: Radius.circular(10)),
                       child: Image.network(
-                        merch['image'],
+                        merch['image_url'],
                         width: double.infinity,
                         fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) => const Icon(Icons.image_not_supported, size: 50),
+                        errorBuilder: (context, error, stackTrace) =>
+                            const Icon(Icons.image_not_supported, size: 50),
                       ),
                     ),
                   ),
@@ -76,7 +80,7 @@ class MerchandisePage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          merch['nama'],
+                          merch['nama_merch'],
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
@@ -85,7 +89,8 @@ class MerchandisePage extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 4),
-                        Text('Stok: ${merch['stok']}', style: const TextStyle(fontSize: 12)),
+                        Text('Stok: ${merch['stok']}',
+                            style: const TextStyle(fontSize: 12)),
                       ],
                     ),
                   ),
