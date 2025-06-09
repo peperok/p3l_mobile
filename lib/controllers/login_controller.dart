@@ -78,7 +78,8 @@ class LoginController {
               data['detail']['nama_penitip'] ??
               data['detail']['nama_pegawai'] ??
               'Nama Pengguna';
-          UserSession.userEmail = data['detail']['email'] ?? 'email@example.com';
+          UserSession.userEmail =
+              data['detail']['email'] ?? 'email@example.com';
           UserSession.userType = selectedRole.toString().split('.').last;
 
           // ====== TAMBAHAN UNTUK ROLE NAMA PEGAWAI (kurir/hunter) ======
@@ -116,22 +117,25 @@ class LoginController {
           } else if (role == 'hunter') {
             Navigator.pushReplacementNamed(context, '/homeHunter');
           } else {
-            _showSnackBar(context, "Role pegawai tidak dikenali. Akses ditolak.");
+            _showSnackBar(
+                context, "Role pegawai tidak dikenali. Akses ditolak.");
             return;
           }
         } else {
           Navigator.pushReplacementNamed(context, '/home');
         }
       } else {
-        _showSnackBar(context, data['message'] ?? "Login gagal! Terjadi kesalahan.");
+        _showSnackBar(
+            context, data['message'] ?? "Login gagal! Terjadi kesalahan.");
       }
     } catch (e) {
       _showSnackBar(context, "Terjadi kesalahan koneksi. Silakan coba lagi.");
       print("Error login: $e");
     }
-    }
+  }
 
   void _showSnackBar(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
   }
 }

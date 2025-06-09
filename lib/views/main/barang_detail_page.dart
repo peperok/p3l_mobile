@@ -10,7 +10,8 @@ class BarangDetailPage extends StatelessWidget {
 
   // Fungsi helper untuk menampilkan SnackBar
   void _showSnackBar(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
   }
 
   // Fungsi helper untuk navigasi ke login
@@ -46,11 +47,12 @@ class BarangDetailPage extends StatelessWidget {
                 barang.imageUrl,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
-                  return Center(child: Icon(Icons.broken_image, size: 100, color: Colors.grey));
+                  return Center(
+                      child: Icon(Icons.broken_image,
+                          size: 100, color: Colors.grey));
                 },
               ),
             ),
-            
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -105,10 +107,12 @@ class BarangDetailPage extends StatelessWidget {
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      Icon(Icons.calendar_today_outlined, color: Colors.grey[600]),
+                      Icon(Icons.calendar_today_outlined,
+                          color: Colors.grey[600]),
                       const SizedBox(width: 8),
                       Text(
-                        barang.tglGaransi != null && barang.tglGaransi!.isNotEmpty
+                        barang.tglGaransi != null
+                            // &&barang.tglGaransi!.isNotEmpty
                             ? "Garansi hingga: ${barang.tglGaransi}"
                             : "Tidak ada informasi garansi",
                         style: TextStyle(
@@ -129,19 +133,23 @@ class BarangDetailPage extends StatelessWidget {
                             // Cek apakah user sudah login
                             if (isLoggedIn) {
                               // User sudah login, lakukan aksi tambahkan ke keranjang
-                              _showSnackBar(context, '"${barang.namaBarang}" ditambahkan ke keranjang!');
+                              _showSnackBar(context,
+                                  '"${barang.namaBarang}" ditambahkan ke keranjang!');
                               // Tambahkan logic Add to Cart ke backend di sini
                             } else {
                               // User belum login, arahkan ke halaman login
                               _navigateToLogin(context);
                             }
                           },
-                          icon: const Icon(Icons.shopping_cart_outlined, color: Colors.white),
-                          label: const Text("Tambah ke Keranjang", style: TextStyle(color: Colors.white)),
+                          icon: const Icon(Icons.shopping_cart_outlined,
+                              color: Colors.white),
+                          label: const Text("Tambah ke Keranjang",
+                              style: TextStyle(color: Colors.white)),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: colorPrimary,
                             padding: const EdgeInsets.symmetric(vertical: 12),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8)),
                           ),
                         ),
                       ),
@@ -152,7 +160,8 @@ class BarangDetailPage extends StatelessWidget {
                             // Cek apakah user sudah login
                             if (isLoggedIn) {
                               // User sudah login, lakukan aksi beli sekarang
-                              _showSnackBar(context, 'Membeli "${barang.namaBarang}" sekarang!');
+                              _showSnackBar(context,
+                                  'Membeli "${barang.namaBarang}" sekarang!');
                               // Tambahkan logic Buy Now ke backend di sini
                             } else {
                               // User belum login, arahkan ke halaman login
@@ -160,11 +169,13 @@ class BarangDetailPage extends StatelessWidget {
                             }
                           },
                           icon: const Icon(Icons.payment, color: Colors.white),
-                          label: const Text("Beli Sekarang", style: TextStyle(color: Colors.white)),
+                          label: const Text("Beli Sekarang",
+                              style: TextStyle(color: Colors.white)),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: colorAccent,
                             padding: const EdgeInsets.symmetric(vertical: 12),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8)),
                           ),
                         ),
                       ),
