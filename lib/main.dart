@@ -10,6 +10,8 @@ import 'dart:convert';
 import 'package:p3lcoba/views/main/home_hunter.dart';
 import 'package:p3lcoba/views/main/home_kurir.dart';
 import 'package:p3lcoba/views/main/merchandise.dart';
+import 'package:p3lcoba/views/main/penitip_profile_page.dart';
+import 'package:p3lcoba/views/main/home_penitip.dart';
 
 //import firebase
 import 'package:firebase_core/firebase_core.dart';
@@ -17,17 +19,15 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'firebase_options.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-
 // Instansiasi FlutterLocalNotificationsPlugin
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 
 // Fungsi global untuk background message handler (tetap sama)
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   print('Handling a background message: ${message.messageId}');
 }
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,9 +37,11 @@ void main() async {
   );
 
   // <<< INISIALISASI FLUTTER LOCAL NOTIFICATIONS >>>
-  const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@drawable/ic_stat_notification');
+  const AndroidInitializationSettings initializationSettingsAndroid =
+      AndroidInitializationSettings('@drawable/ic_stat_notification');
   // Untuk iOS, kamu perlu konfigurasi tambahan jika target iOS
-  const DarwinInitializationSettings initializationSettingsDarwin = DarwinInitializationSettings(); // Untuk iOS/macOS
+  const DarwinInitializationSettings initializationSettingsDarwin =
+      DarwinInitializationSettings(); // Untuk iOS/macOS
   const InitializationSettings initializationSettings = InitializationSettings(
     android: initializationSettingsAndroid,
     iOS: initializationSettingsDarwin,
@@ -48,11 +50,16 @@ void main() async {
   await flutterLocalNotificationsPlugin.initialize(initializationSettings);
   // <<< AKHIR INISIALISASI FLUTTER LOCAL NOTIFICATIONS >>>
 
-
   FirebaseMessaging messaging = FirebaseMessaging.instance;
 
   NotificationSettings settings = await messaging.requestPermission(
-    alert: true, announcement: false, badge: true, carPlay: false, criticalAlert: false, provisional: false, sound: true,
+    alert: true,
+    announcement: false,
+    badge: true,
+    carPlay: false,
+    criticalAlert: false,
+    provisional: false,
+    sound: true,
   );
 
   if (settings.authorizationStatus == AuthorizationStatus.authorized) {
@@ -79,8 +86,9 @@ void main() async {
     print('Message data: ${message.data}');
 
     if (message.notification != null) {
-      print('Message also contained a notification: ${message.notification!.title} / ${message.notification!.body}');
-      
+      print(
+          'Message also contained a notification: ${message.notification!.title} / ${message.notification!.body}');
+
       // Tampilkan notifikasi lokal menggunakan flutter_local_notifications
       flutterLocalNotificationsPlugin.show(
         message.notification.hashCode, // ID notifikasi unik
@@ -90,14 +98,16 @@ void main() async {
           android: AndroidNotificationDetails(
             'high_importance_channel', // Harus sama dengan channel_id di AndroidManifest.xml
             'High Importance Notifications',
-            channelDescription: 'This channel is used for important notifications.',
+            channelDescription:
+                'This channel is used for important notifications.',
             importance: Importance.max,
             priority: Priority.high,
             showWhen: false,
           ),
           iOS: DarwinNotificationDetails(), // Untuk iOS
         ),
-        payload: jsonEncode(message.data), // Data yang bisa kamu ambil saat notif diklik
+        payload: jsonEncode(
+            message.data), // Data yang bisa kamu ambil saat notif diklik
       );
     }
   });
@@ -124,15 +134,24 @@ class MyApp extends StatelessWidget {
         ),
       ),
       initialRoute: _getInitialRoute(),
-
       routes: {
         '/login': (context) => LoginPage(),
         '/register': (context) => RegisterPage(),
         '/home': (context) => HomePage(),
         '/homeKurir': (context) => HomeKurir(),
         '/homeHunter': (context) => HomeHunter(),
+        '/homePenitip': (context) => const HomePenitip(),
         '/unlogin': (context) => MainUnlogin(),
-        '/profile': (context) => const BuyerProfilePage(),
+        '/profile': (context) {
+          if (UserSession.userType == 'pembeli') {
+            return const BuyerProfilePage();
+          } else if (UserSession.userType == 'penitip') {
+            return const PenitipProfilePage();
+          } else {
+            return const Scaffold(
+                body: Center(child: Text('Role tidak dikenali.')));
+          }
+        },
         '/merchandise': (context) => const MerchandisePage(),
       },
     );

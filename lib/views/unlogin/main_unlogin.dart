@@ -6,6 +6,9 @@ import 'package:p3lcoba/models/barang.dart'; // Import model Barang
 import 'package:p3lcoba/views/auth/login.dart';
 import 'package:p3lcoba/views/main/barang_detail_page.dart';
 
+import 'package:p3lcoba/components/informasi_umum_footer.dart';
+
+
 class MainUnlogin extends StatefulWidget {
   @override
   _MainUnloginState createState() => _MainUnloginState();
@@ -322,6 +325,7 @@ class _MainUnloginState extends State<MainUnlogin> {
                 },
               ),
             ),
+            const InformasiUmumFooter(),
             const SizedBox(height: 20),
           ],
         ),
