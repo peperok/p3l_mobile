@@ -11,6 +11,7 @@ import 'package:p3lcoba/views/main/home_hunter.dart';
 import 'package:p3lcoba/views/main/home_kurir.dart';
 import 'package:p3lcoba/views/main/merchandise.dart';
 import 'package:p3lcoba/views/main/penitip_profile_page.dart';
+import 'package:p3lcoba/views/main/home_penitip.dart';
 
 //import firebase
 import 'package:firebase_core/firebase_core.dart';
@@ -136,16 +137,21 @@ class MyApp extends StatelessWidget {
       routes: {
         '/login': (context) => LoginPage(),
         '/register': (context) => RegisterPage(),
-
         '/home': (context) => HomePage(),
         '/homeKurir': (context) => HomeKurir(),
         '/homeHunter': (context) => HomeHunter(),
-
+        '/homePenitip': (context) => const HomePenitip(),
         '/unlogin': (context) => MainUnlogin(),
-
-        '/profile': (context) => const BuyerProfilePage(),
-        '/profilePenitip': (context) => const PenitipProfilePage(),
-        
+        '/profile': (context) {
+          if (UserSession.userType == 'pembeli') {
+            return const BuyerProfilePage();
+          } else if (UserSession.userType == 'penitip') {
+            return const PenitipProfilePage();
+          } else {
+            return const Scaffold(
+                body: Center(child: Text('Role tidak dikenali.')));
+          }
+        },
         '/merchandise': (context) => const MerchandisePage(),
       },
     );
