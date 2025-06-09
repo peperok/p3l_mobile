@@ -12,20 +12,10 @@ class BarangController {
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> jsonResponse = json.decode(response.body);
-
-      if (jsonResponse['data'] is List) {
-        final List<dynamic> dataList = jsonResponse['data'];
-        try {
-          return dataList.map((json) => Barang.fromJson(json)).toList();
-        } catch (e) {
-          print('JSON parse error: $e');
-          throw Exception('Failed to parse barang: $e');
-        }
-      } else {
-        throw Exception("Format data tidak valid: ${jsonResponse['data']}");
-      }
+      final List<dynamic> dataList = jsonResponse['data'];
+      return dataList.map((json) => Barang.fromJson(json)).toList();
     } else {
-      throw Exception("Gagal memuat barang: ${response.statusCode}");
+      throw Exception('Gagal mengambil data barang');
     }
   }
 

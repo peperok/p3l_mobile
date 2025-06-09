@@ -125,62 +125,62 @@ class BarangDetailPage extends StatelessWidget {
                   const SizedBox(height: 30),
 
                   // Tombol Aksi (Add to Cart / Buy Now)
-                  Row(
-                    children: [
-                      Expanded(
-                        child: ElevatedButton.icon(
-                          onPressed: () {
-                            // Cek apakah user sudah login
-                            if (isLoggedIn) {
-                              // User sudah login, lakukan aksi tambahkan ke keranjang
-                              _showSnackBar(context,
-                                  '"${barang.namaBarang}" ditambahkan ke keranjang!');
-                              // Tambahkan logic Add to Cart ke backend di sini
-                            } else {
-                              // User belum login, arahkan ke halaman login
-                              _navigateToLogin(context);
-                            }
-                          },
-                          icon: const Icon(Icons.shopping_cart_outlined,
-                              color: Colors.white),
-                          label: const Text("Tambah ke Keranjang",
-                              style: TextStyle(color: Colors.white)),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: colorPrimary,
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8)),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: ElevatedButton.icon(
-                          onPressed: () {
-                            // Cek apakah user sudah login
-                            if (isLoggedIn) {
-                              // User sudah login, lakukan aksi beli sekarang
-                              _showSnackBar(context,
-                                  'Membeli "${barang.namaBarang}" sekarang!');
-                              // Tambahkan logic Buy Now ke backend di sini
-                            } else {
-                              // User belum login, arahkan ke halaman login
-                              _navigateToLogin(context);
-                            }
-                          },
-                          icon: const Icon(Icons.payment, color: Colors.white),
-                          label: const Text("Beli Sekarang",
-                              style: TextStyle(color: Colors.white)),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: colorAccent,
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8)),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                  // Row(
+                  //   children: [
+                  //     Expanded(
+                  //       child: ElevatedButton.icon(
+                  //         onPressed: () {
+                  //           // Cek apakah user sudah login
+                  //           if (isLoggedIn) {
+                  //             // User sudah login, lakukan aksi tambahkan ke keranjang
+                  //             _showSnackBar(context,
+                  //                 '"${barang.namaBarang}" ditambahkan ke keranjang!');
+                  //             // Tambahkan logic Add to Cart ke backend di sini
+                  //           } else {
+                  //             // User belum login, arahkan ke halaman login
+                  //             _navigateToLogin(context);
+                  //           }
+                  //         },
+                  //         icon: const Icon(Icons.shopping_cart_outlined,
+                  //             color: Colors.white),
+                  //         label: const Text("Tambah ke Keranjang",
+                  //             style: TextStyle(color: Colors.white)),
+                  //         style: ElevatedButton.styleFrom(
+                  //           backgroundColor: colorPrimary,
+                  //           padding: const EdgeInsets.symmetric(vertical: 12),
+                  //           shape: RoundedRectangleBorder(
+                  //               borderRadius: BorderRadius.circular(8)),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //     const SizedBox(width: 10),
+                  //     Expanded(
+                  //       child: ElevatedButton.icon(
+                  //         onPressed: () {
+                  //           // Cek apakah user sudah login
+                  //           if (isLoggedIn) {
+                  //             // User sudah login, lakukan aksi beli sekarang
+                  //             _showSnackBar(context,
+                  //                 'Membeli "${barang.namaBarang}" sekarang!');
+                  //             // Tambahkan logic Buy Now ke backend di sini
+                  //           } else {
+                  //             // User belum login, arahkan ke halaman login
+                  //             _navigateToLogin(context);
+                  //           }
+                  //         },
+                  //         icon: const Icon(Icons.payment, color: Colors.white),
+                  //         label: const Text("Beli Sekarang",
+                  //             style: TextStyle(color: Colors.white)),
+                  //         style: ElevatedButton.styleFrom(
+                  //           backgroundColor: colorAccent,
+                  //           padding: const EdgeInsets.symmetric(vertical: 12),
+                  //           shape: RoundedRectangleBorder(
+                  //               borderRadius: BorderRadius.circular(8)),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
                 ],
               ),
             ),
