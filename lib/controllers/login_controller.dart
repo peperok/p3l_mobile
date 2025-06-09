@@ -5,8 +5,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'user_session.dart';
 
-//haaalloo
-
 enum UserRole {
   pembeli,
   penitip,
@@ -67,9 +65,8 @@ class LoginController {
         headers: {'Content-Type': 'application/json'},
       );
 
-      final data = json.decode(response.body);
-
       if (response.statusCode == 200) {
+        final data = json.decode(response.body);
         _showSnackBar(context, data['message']);
 
         if (data['detail'] != null) {
@@ -82,7 +79,6 @@ class LoginController {
               data['detail']['email'] ?? 'email@example.com';
           UserSession.userType = selectedRole.toString().split('.').last;
 
-          // ====== TAMBAHAN UNTUK ROLE NAMA PEGAWAI (kurir/hunter) ======
           if (selectedRole == UserRole.pegawai) {
             final jabatan = data['detail']['jabatan'];
             if (jabatan != null) {
@@ -93,11 +89,9 @@ class LoginController {
           await UserSession.saveSession();
         }
 
-        // ============ Kirim FCM Token ============
+        // FCM Token
         final fcmToken = await FirebaseMessaging.instance.getToken();
         if (fcmToken != null) {
-          print("FCM token didapat: $fcmToken");
-
           await http.post(
             Uri.parse('http://10.0.2.2:8000/api/fcm-token'),
             headers: {'Content-Type': 'application/json'},
@@ -109,7 +103,7 @@ class LoginController {
           );
         }
 
-        // ============ Routing berdasarkan role ============
+        // Routing
         if (selectedRole == UserRole.pegawai) {
           final role = UserSession.userRoleName;
           if (role == 'kurir') {
@@ -117,16 +111,20 @@ class LoginController {
           } else if (role == 'hunter') {
             Navigator.pushReplacementNamed(context, '/homeHunter');
           } else {
-            _showSnackBar(
-                context, "Role pegawai tidak dikenali. Akses ditolak.");
-            return;
+            _showSnackBar(context, "Role pegawai tidak dikenali. Akses ditolak.");
           }
         } else {
           Navigator.pushReplacementNamed(context, '/home');
         }
       } else {
-        _showSnackBar(
-            context, data['message'] ?? "Login gagal! Terjadi kesalahan.");
+        try {
+          final data = json.decode(response.body);
+          _showSnackBar(context, data['message'] ?? "Login gagal.");
+        } catch (e) {
+          _showSnackBar(context, "Login gagal: format respons tidak dikenali.");
+          print("Gagal parsing response: $e");
+          print("Isi body: ${response.body}");
+        }
       }
     } catch (e) {
       _showSnackBar(context, "Terjadi kesalahan koneksi. Silakan coba lagi.");
