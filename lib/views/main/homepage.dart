@@ -1,7 +1,6 @@
-// Tambahkan import jika belum
 import 'package:flutter/material.dart';
 import 'package:p3lcoba/models/barang.dart';
-import 'package:p3lcoba/models/merch.dart';
+import 'package:p3lcoba/models/merchandise.dart';
 import 'package:p3lcoba/utils/constants.dart';
 import 'package:p3lcoba/views/main/barang_detail_page.dart';
 import 'package:p3lcoba/controllers/barang_controller.dart';
@@ -34,6 +33,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
+    // print("BarangController: $BarangController");
     super.initState();
     _futureMerch = MerchandiseController.getAllMerch();
     _futureBarang = BarangController.getAllBarang();
@@ -217,83 +217,101 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(height: 10),
 
             FutureBuilder<List<Merchandise>>(
-              future: _futureMerch,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(
-                      child: Text('Error: ${snapshot.error}',
-                          style: const TextStyle(color: Colors.red)));
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(
-                      child: Text('Tidak ada merchandise tersedia.'));
-                } else {
-                  final merchList = snapshot.data!;
-                  return Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: GridView.builder(
+                future: _futureMerch,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(
+                        child: Text('Error: ${snapshot.error}',
+                            style: const TextStyle(color: Colors.red)));
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return const Center(
+                        child: Text('Tidak ada barang tersedia saat ini.'));
+                  } else {
+                    final merchendiseList = snapshot.data!;
+                    return GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 10,
+                        crossAxisSpacing: 10.0,
+                        mainAxisSpacing: 10.0,
                         childAspectRatio: 0.75,
                       ),
-                      itemCount: merchList.length,
+                      itemCount: merchendiseList.length.clamp(0, 2),
                       itemBuilder: (context, index) {
-                        final merch = merchList[index];
-                        return Card(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10)),
-                          elevation: 3,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              ClipRRect(
-                                borderRadius: const BorderRadius.vertical(
-                                    top: Radius.circular(10)),
-                                child: Image.network(
-                                  merch.imageUrl,
-                                  height: 120,
-                                  width: double.infinity,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) =>
-                                      const Icon(Icons.image_not_supported,
-                                          size: 50),
+                        final merchandise = merchendiseList[index];
+                        return GestureDetector(
+                          // onTap: () {
+                          //   Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //       builder: (context) =>
+                          //        DetailMerchendisePage(merchandise: merchandise);
+                          //   )
+                          // }
+                          child: Card(
+                            elevation: 3,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: ClipRRect(
+                                    borderRadius: const BorderRadius.vertical(
+                                        top: Radius.circular(10)),
+                                    child: Image.network(
+                                      merchandise.imageUrl,
+                                      fit: BoxFit.cover,
+                                      width: double.infinity,
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                        return const Center(
+                                            child: Icon(Icons.broken_image,
+                                                size: 50, color: Colors.grey));
+                                      },
+                                    ),
+                                  ),
                                 ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      merch.namaMerch,
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        merchandise.namaMerch,
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                            color: colorTertiary),
                                       ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      'Stok: ${merch.stok}',
-                                      style: const TextStyle(fontSize: 14),
-                                    ),
-                                  ],
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        "Stok ${merchandise.stok}",
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            color: colorAccent,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      const SizedBox(height: 4),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         );
                       },
-                    ),
-                  );
-                }
-              },
-            ),
+                    );
+                  }
+                }),
 
             // Produk Rekomendasi
             Padding(

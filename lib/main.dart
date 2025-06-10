@@ -9,7 +9,7 @@ import 'package:p3lcoba/controllers/user_session.dart';
 import 'dart:convert';
 import 'package:p3lcoba/views/main/home_hunter.dart';
 import 'package:p3lcoba/views/main/home_kurir.dart';
-import 'package:p3lcoba/views/main/merchandise.dart';
+import 'package:p3lcoba/views/main/merchandisePage.dart';
 
 //import firebase
 import 'package:firebase_core/firebase_core.dart';
