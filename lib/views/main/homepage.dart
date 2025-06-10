@@ -7,7 +7,6 @@ import 'package:p3lcoba/views/main/barang_detail_page.dart';
 import 'package:p3lcoba/controllers/barang_controller.dart';
 import 'package:p3lcoba/controllers/merchandise_controller.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:p3lcoba/components/informasi_umum_footer.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -461,8 +460,6 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-            const InformasiUmumFooter(),
-            const SizedBox(height: 10),
           ],
         ),
       ),

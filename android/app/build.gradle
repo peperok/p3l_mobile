@@ -9,11 +9,7 @@ plugins {
 android {
     namespace = "com.example.p3lcoba"
     // <<< UBAH compileSdk menjadi 35 >>>
-<<<<<<< Updated upstream
     compileSdk = 36 
-=======
-    compileSdk = 35 
->>>>>>> Stashed changes
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -30,11 +26,7 @@ android {
         applicationId = "com.example.p3lcoba"
         // <<< UBAH minSdk menjadi 23 dan targetSdk menjadi 35 >>>
         minSdk = 23
-<<<<<<< Updated upstream
         targetSdk = 36
-=======
-        targetSdk = 35
->>>>>>> Stashed changes
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
@@ -56,11 +48,6 @@ dependencies {
 
     // <<< PASTIKAN BARIS INI ADA DAN TIDAK DIKOMENTARI >>>
     implementation "androidx.core:core-ktx:1.12.0" // Gunakan versi 1.12.0 atau yang terbaru
-<<<<<<< Updated upstream
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.4'
     
-=======
-
-    // Dependensi lain yang mungkin sudah ada di projectmu, biarkan saja
->>>>>>> Stashed changes
 }
