@@ -15,7 +15,7 @@ class _LoginPageState extends State<LoginPage> {
   bool _obscureText = true;
 
   // Default atau pilihan awal untuk Dropdown
-  UserRole? _selectedLoginUserRole = UserRole.pembeli; 
+  UserRole? _selectedLoginUserRole = UserRole.pembeli;
 
   @override
   void initState() {
@@ -77,10 +77,11 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     const SizedBox(height: 25),
-                    
+
                     // --- Dropdown untuk Memilih Tipe Akun ---
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 4),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(10),
@@ -94,7 +95,8 @@ class _LoginPageState extends State<LoginPage> {
                           onChanged: (UserRole? newValue) {
                             setState(() {
                               _selectedLoginUserRole = newValue;
-                              _controller.setSelectedRole(newValue); // Set tipe di controller
+                              _controller.setSelectedRole(
+                                  newValue); // Set tipe di controller
                             });
                           },
                           items: const <DropdownMenuItem<UserRole>>[
@@ -111,7 +113,8 @@ class _LoginPageState extends State<LoginPage> {
                               child: Text("Pegawai"),
                             ),
                           ],
-                          icon: Icon(Icons.arrow_drop_down, color: Colors.grey[600]),
+                          icon: Icon(Icons.arrow_drop_down,
+                              color: Colors.grey[600]),
                           style: TextStyle(color: colorTertiary, fontSize: 16),
                           dropdownColor: Colors.white,
                         ),
@@ -131,7 +134,8 @@ class _LoginPageState extends State<LoginPage> {
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide.none,
                         ),
-                        contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                        contentPadding: const EdgeInsets.symmetric(
+                            vertical: 15, horizontal: 20),
                         hintStyle: TextStyle(color: Colors.grey[600]),
                       ),
                       style: TextStyle(color: colorTertiary),
@@ -149,11 +153,14 @@ class _LoginPageState extends State<LoginPage> {
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide.none,
                         ),
-                        contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                        contentPadding: const EdgeInsets.symmetric(
+                            vertical: 15, horizontal: 20),
                         hintStyle: TextStyle(color: Colors.grey[600]),
                         suffixIcon: IconButton(
                           icon: Icon(
-                            _obscureText ? Icons.visibility_off : Icons.visibility,
+                            _obscureText
+                                ? Icons.visibility_off
+                                : Icons.visibility,
                             color: Colors.grey[600],
                           ),
                           onPressed: () {
@@ -199,7 +206,10 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         child: const Text(
                           "Login",
-                          style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold),
                         ),
                       ),
                     ),
@@ -217,7 +227,9 @@ class _LoginPageState extends State<LoginPage> {
                           padding: const EdgeInsets.symmetric(horizontal: 15.0),
                           child: Text(
                             "or login with",
-                            style: TextStyle(color: colorTertiary.withOpacity(0.8), fontSize: 16),
+                            style: TextStyle(
+                                color: colorTertiary.withOpacity(0.8),
+                                fontSize: 16),
                           ),
                         ),
                         Expanded(
@@ -235,7 +247,9 @@ class _LoginPageState extends State<LoginPage> {
                       children: [
                         Text(
                           "Don't Have account?",
-                          style: TextStyle(color: colorTertiary.withOpacity(0.7), fontSize: 15),
+                          style: TextStyle(
+                              color: colorTertiary.withOpacity(0.7),
+                              fontSize: 15),
                         ),
                         const SizedBox(width: 5),
                         GestureDetector(
@@ -261,7 +275,8 @@ class _LoginPageState extends State<LoginPage> {
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => MainUnlogin()),
+                            MaterialPageRoute(
+                                builder: (context) => MainUnlogin()),
                           );
                         },
                         child: Text(

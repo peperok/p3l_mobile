@@ -10,6 +10,7 @@ import 'dart:convert';
 import 'package:p3lcoba/views/main/home_hunter.dart';
 import 'package:p3lcoba/views/main/home_kurir.dart';
 import 'package:p3lcoba/views/main/merchandisePage.dart';
+import 'package:p3lcoba/views/main/hunter_profile.dart';
 
 //import firebase
 import 'package:firebase_core/firebase_core.dart';
@@ -141,6 +142,7 @@ class MyApp extends StatelessWidget {
         '/unlogin': (context) => MainUnlogin(),
         '/profile': (context) => const BuyerProfilePage(),
         '/merchandise': (context) => MerchandisePage(),
+        '/profileHunter': (context) => HunterProfilePage(),
       },
     );
   }
