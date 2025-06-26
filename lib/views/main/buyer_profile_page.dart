@@ -26,31 +26,23 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
     });
 
     try {
-      // Dummy data simulation - Replace with actual API calls when backend is ready
-      await Future.delayed(const Duration(seconds: 1)); // Simulate network delay
+      await Future.delayed(const Duration(seconds: 1)); // Simulate delay
       setState(() {
         _rewardPoints = 250;
         _purchaseHistory = [
           {
-            'id': 'ABC1',
-            'date': '2025-05-30',
-            'item': 'Produk A Daur Ulang',
-            'price': 'Rp 100.000',
+            'date': '2025-06-10',
+            'item': 'Speaker Bluetooth Mini',
+            'price': 'Rp 150.000',
+            'metode': 'Transfer Bank',
             'status': 'Selesai',
           },
           {
-            'id': 'DEF2',
-            'date': '2025-05-25',
-            'item': 'Produk B Bekas',
-            'price': 'Rp 70.000',
+            'date': '2025-02-28',
+            'item': 'Jaket Hoodie Katun',
+            'price': 'Rp 200.000',
+            'metode': 'COD',
             'status': 'Selesai',
-          },
-          {
-            'id': 'GHI3',
-            'date': '2025-05-20',
-            'item': 'Produk C Ramah Lingkungan',
-            'price': 'Rp 120.000',
-            'status': 'Pending', // Contoh status pending
           },
         ];
       });
@@ -88,36 +80,26 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
                     child: CircleAvatar(
                       radius: 60,
                       backgroundColor: colorAccent,
-                      child: Icon(
-                        Icons.person,
-                        size: 70,
-                        color: Colors.white,
-                      ),
+                      child: const Icon(Icons.person, size: 70, color: Colors.white),
                     ),
                   ),
                   const SizedBox(height: 20),
                   Center(
                     child: Text(
                       fullName ?? "Nama Pengguna",
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: colorTertiary,
-                      ),
+                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: colorTertiary),
                     ),
                   ),
                   const SizedBox(height: 5),
                   Center(
                     child: Text(
                       email ?? "email@example.com",
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: colorTertiary.withOpacity(0.7),
-                      ),
+                      style: TextStyle(fontSize: 16, color: colorTertiary.withOpacity(0.7)),
                     ),
                   ),
                   const SizedBox(height: 30),
 
+                  // Info Dasar
                   Card(
                     elevation: 4,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
@@ -126,22 +108,14 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _buildProfileInfoRow(
-                            icon: Icons.person_outline,
-                            label: "User ID",
-                            value: userId ?? "Tidak Tersedia",
-                          ),
+                          _buildProfileInfoRow(Icons.person_outline, "User ID", userId ?? "Tidak Tersedia"),
+                          const Divider(height: 25, thickness: 1),
+                          _buildProfileInfoRow(Icons.email_outlined, "Email", email ?? "Tidak Tersedia"),
                           const Divider(height: 25, thickness: 1),
                           _buildProfileInfoRow(
-                            icon: Icons.email_outlined,
-                            label: "Email",
-                            value: email ?? "Tidak Tersedia",
-                          ),
-                          const Divider(height: 25, thickness: 1),
-                          _buildProfileInfoRow(
-                            icon: Icons.badge_outlined,
-                            label: "Tipe Akun",
-                            value: (userType != null && userType.isNotEmpty)
+                            Icons.badge_outlined,
+                            "Tipe Akun",
+                            (userType != null && userType.isNotEmpty)
                                 ? userType.capitalizeFirstOfEachWord()
                                 : "Tidak Tersedia",
                           ),
@@ -151,14 +125,9 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
                   ),
                   const SizedBox(height: 30),
 
-                  Text(
-                    "Poin Reward",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: colorTertiary,
-                    ),
-                  ),
+                  // Reward Poin
+                  Text("Poin Reward",
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: colorTertiary)),
                   const SizedBox(height: 15),
                   Card(
                     elevation: 4,
@@ -167,27 +136,16 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
                       padding: const EdgeInsets.all(20.0),
                       child: Row(
                         children: [
-                          Icon(Icons.star, color: Colors.amber, size: 30),
+                          const Icon(Icons.star, color: Colors.amber, size: 30),
                           const SizedBox(width: 15),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                "Total Poin Anda:",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: colorTertiary.withOpacity(0.7),
-                                ),
-                              ),
+                              Text("Total Poin Anda:",
+                                  style: TextStyle(fontSize: 16, color: colorTertiary.withOpacity(0.7))),
                               const SizedBox(height: 5),
-                              Text(
-                                "${_rewardPoints} Poin",
-                                style: TextStyle(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold,
-                                  color: colorAccent,
-                                ),
-                              ),
+                              Text("$_rewardPoints Poin",
+                                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: colorAccent)),
                             ],
                           ),
                         ],
@@ -196,26 +154,19 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
                   ),
                   const SizedBox(height: 30),
 
-                  Text(
-                    "Riwayat Pembelian",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: colorTertiary,
-                    ),
-                  ),
+                  // Riwayat Pembelian
+                  Text("Riwayat Pembelian",
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: colorTertiary)),
                   const SizedBox(height: 15),
                   _purchaseHistory.isEmpty
                       ? Card(
                           elevation: 4,
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                          child: Padding(
-                            padding: const EdgeInsets.all(20.0),
+                          child: const Padding(
+                            padding: EdgeInsets.all(20.0),
                             child: Center(
-                              child: Text(
-                                "Belum ada riwayat pembelian.",
-                                style: TextStyle(fontSize: 16, color: colorTertiary.withOpacity(0.7)),
-                              ),
+                              child: Text("Belum ada riwayat pembelian.",
+                                  style: TextStyle(fontSize: 16, color: Colors.grey)),
                             ),
                           ),
                         )
@@ -230,41 +181,25 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      "Pesanan ID: ${history['id']}",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                        color: colorTertiary,
-                                      ),
-                                    ),
+                                    Text("Tanggal: ${history['date']}",
+                                        style: TextStyle(color: colorTertiary, fontWeight: FontWeight.bold)),
                                     const SizedBox(height: 5),
-                                    Text(
-                                      "Tanggal: ${history['date']}",
-                                      style: TextStyle(color: colorTertiary.withOpacity(0.8)),
-                                    ),
+                                    Text("Item: ${history['item']}", style: TextStyle(color: colorTertiary)),
                                     const SizedBox(height: 5),
-                                    Text(
-                                      "Item: ${history['item']}",
-                                      style: TextStyle(color: colorTertiary.withOpacity(0.8)),
-                                    ),
+                                    Text("Metode Pembayaran: ${history['metode']}",
+                                        style: const TextStyle(color: Colors.indigo)),
                                     const SizedBox(height: 5),
-                                    Text(
-                                      "Harga: ${history['price']}",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: colorAccent,
-                                      ),
-                                    ),
+                                    Text("Harga: ${history['price']}",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold, color: colorAccent, fontSize: 16)),
                                     const SizedBox(height: 5),
                                     Align(
                                       alignment: Alignment.bottomRight,
                                       child: Chip(
-                                        label: Text(
-                                          history['status']!,
-                                          style: const TextStyle(color: Colors.white),
-                                        ),
-                                        backgroundColor: history['status'] == 'Selesai' ? Colors.green : Colors.orange,
+                                        label: Text(history['status']!, style: const TextStyle(color: Colors.white)),
+                                        backgroundColor: history['status'] == 'Selesai'
+                                            ? Colors.green
+                                            : Colors.orange,
                                       ),
                                     ),
                                   ],
@@ -275,6 +210,7 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
                         ),
                   const SizedBox(height: 30),
 
+                  // Logout
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton.icon(
@@ -283,10 +219,7 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
                         Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
                       },
                       icon: const Icon(Icons.logout, color: Colors.white),
-                      label: const Text(
-                        "Logout",
-                        style: TextStyle(fontSize: 18, color: Colors.white),
-                      ),
+                      label: const Text("Logout", style: TextStyle(fontSize: 18, color: Colors.white)),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red.shade600,
                         padding: const EdgeInsets.symmetric(vertical: 15),
@@ -300,7 +233,7 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
     );
   }
 
-  Widget _buildProfileInfoRow({required IconData icon, required String label, required String value}) {
+  Widget _buildProfileInfoRow(IconData icon, String label, String value) {
     return Row(
       children: [
         Icon(icon, color: colorAccent, size: 28),
@@ -308,23 +241,17 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 14,
-                color: colorTertiary.withOpacity(0.6),
-                fontWeight: FontWeight.w500,
-              ),
-            ),
+            Text(label,
+                style: TextStyle(
+                    fontSize: 14,
+                    color: colorTertiary.withOpacity(0.6),
+                    fontWeight: FontWeight.w500)),
             const SizedBox(height: 4),
-            Text(
-              value,
-              style: TextStyle(
-                fontSize: 16,
-                color: colorTertiary,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            Text(value,
+                style: TextStyle(
+                    fontSize: 16,
+                    color: colorTertiary,
+                    fontWeight: FontWeight.bold)),
           ],
         ),
       ],
@@ -334,7 +261,10 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
 
 extension StringExtension on String {
   String capitalizeFirstOfEachWord() {
-    if (isEmpty) return this;
-    return split(' ').map((word) => word[0].toUpperCase() + word.substring(1)).join(' ');
+    return split(' ')
+        .map((word) => word.isNotEmpty
+            ? word[0].toUpperCase() + word.substring(1).toLowerCase()
+            : '')
+        .join(' ');
   }
 }

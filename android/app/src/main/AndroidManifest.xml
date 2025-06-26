@@ -1,24 +1,16 @@
-<<<<<<< Updated upstream
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.p3lcoba">
 
-=======
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
->>>>>>> Stashed changes
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:name="${applicationName}"
-<<<<<<< Updated upstream
         android:label="p3lcoba"
         android:icon="@mipmap/ic_launcher"
         android:usesCleartextTraffic="true">
-=======
-        android:userCleartextTraffic="true"
-        android:icon="@mipmap/ic_launcher">
->>>>>>> Stashed changes
 
+        <!-- Notifikasi -->
         <meta-data
             android:name="com.dexterous.flutterlocalnotifications.default_notification_channel_id"
             android:value="high_importance_channel" />
@@ -47,24 +39,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-<<<<<<< Updated upstream
 
-=======
-        
->>>>>>> Stashed changes
+        <!-- Flutter embedding -->
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
 
-<<<<<<< Updated upstream
-</manifest>
-=======
+    <!-- Optional: Query intent for text -->
     <queries>
         <intent>
-            <action android:name="android.intent.action.PROCESS_TEXT"/>
-            <data android:mimeType="text/plain"/>
+            <action android:name="android.intent.action.PROCESS_TEXT" />
+            <data android:mimeType="text/plain" />
         </intent>
     </queries>
 </manifest>
->>>>>>> Stashed changes

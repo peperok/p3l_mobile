@@ -46,6 +46,8 @@ class _HomePenitipState extends State<HomePenitip> {
     _futureBarang = BarangController.getAllBarang();
   }
 
+  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

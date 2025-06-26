@@ -2,64 +2,81 @@ import 'package:flutter/material.dart';
 import 'package:p3lcoba/controllers/user_session.dart';
 import 'package:p3lcoba/utils/constants.dart';
 
-class PenitipProfilePage extends StatefulWidget {
-  const PenitipProfilePage({super.key});
+class HunterProfilePage extends StatefulWidget {
+  const HunterProfilePage({super.key});
 
   @override
-  State<PenitipProfilePage> createState() => _PenitipProfilePageState();
+  State<HunterProfilePage> createState() => _HunterProfilePageState();
 }
 
-class _PenitipProfilePageState extends State<PenitipProfilePage> {
-  int _rewardPoints = 180;
-  int _saldo = 125000;
-  String _badge = "Top Seller Juni";
+class _HunterProfilePageState extends State<HunterProfilePage> {
+  int _huntingCount = 3;
+  double _rating = 4.5;
+  String _badge = "Top Hunter";
+  List<Map<String, dynamic>> _huntingHistory = [];
 
   bool _isLoading = true;
-
-  final List<Map<String, String>> _riwayatBarangTitipan = [
-    {
-      'nama': 'Meja Belajar Anak',
-      'tglKadaluarsa': '2026-03-10',
-    },
-    {
-      'nama': 'Set Buku Dongeng Anak',
-      'tglKadaluarsa': '2026-04-05',
-    },
-    {
-      'nama': 'Mainan Robotik Edukatif',
-      'tglKadaluarsa': '2026-05-20',
-    },
-  ];
 
   @override
   void initState() {
     super.initState();
     _fetchProfileData();
+    _fetchHuntingHistory();
   }
 
   Future<void> _fetchProfileData() async {
     setState(() => _isLoading = true);
-
     try {
-      await Future.delayed(const Duration(seconds: 1));
+      await Future.delayed(
+          const Duration(seconds: 1)); // nanti ganti dengan API
     } catch (e) {
-      print("Error loading profile: $e");
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("Gagal memuat profil.")));
+      print("Error loading hunter profile: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Gagal memuat profil.")),
+      );
     } finally {
       setState(() => _isLoading = false);
     }
   }
 
+  Future<void> _fetchHuntingHistory() async {
+    setState(() => _isLoading = true);
+    try {
+      await Future.delayed(const Duration(seconds: 1));
+      _huntingHistory = [
+        {"id": 1, "task": "TV LED 40 Inch", "status": "Selesai"},
+        {"id": 2, "task": "Mainan Edukasi", "status": "Selesai"},
+        {"id": 3, "task": "Rak Sepatu Besi", "status": "Akan Diambil"},
+      ];
+    } catch (e) {
+      print("Error loading hunting history: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Gagal memuat riwayat hunting.")),
+      );
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+
+  void _updateHuntingStatus(int id) {
+    setState(() {
+      final index = _huntingHistory.indexWhere((task) => task["id"] == id);
+      if (index != -1) {
+        _huntingHistory[index]["status"] = "Selesai";
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final userId = UserSession.userId?.toString();
-    final fullName = UserSession.userFullName ?? "Nama Penitip";
-    final email = UserSession.userEmail ?? "penitip@example.com";
+    final fullName = UserSession.userFullName ?? "Nama Hunter";
+    final email = UserSession.userEmail ?? "hunter@example.com";
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Profil Penitip", style: TextStyle(color: Colors.white)),
+        title:
+            const Text("Profil Hunter", style: TextStyle(color: Colors.white)),
         backgroundColor: colorPrimary,
       ),
       backgroundColor: colorBackgroundLight,
@@ -74,7 +91,8 @@ class _PenitipProfilePageState extends State<PenitipProfilePage> {
                     child: CircleAvatar(
                       radius: 60,
                       backgroundColor: colorAccent,
-                      child: const Icon(Icons.person, size: 70, color: Colors.white),
+                      child: const Icon(Icons.search,
+                          size: 70, color: Colors.white),
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -93,88 +111,59 @@ class _PenitipProfilePageState extends State<PenitipProfilePage> {
                             color: colorTertiary.withOpacity(0.7))),
                   ),
                   const SizedBox(height: 30),
-
-                  // Informasi Umum
                   Card(
                     elevation: 4,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15)),
                     child: Padding(
                       padding: const EdgeInsets.all(20.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _buildInfoRow(Icons.person_outline, "User ID", userId ?? "Tidak Tersedia"),
+                          _buildInfoRow(Icons.person_outline, "User ID",
+                              userId ?? "Tidak Tersedia"),
                           const Divider(height: 25, thickness: 1),
                           _buildInfoRow(Icons.email_outlined, "Email", email),
                           const Divider(height: 25, thickness: 1),
-                          _buildInfoRow(Icons.workspace_premium, "Badge", _badge),
+                          // _buildInfoRow(
+                          //     Icons.workspace_premium, "Badge", _badge),
                         ],
                       ),
                     ),
                   ),
                   const SizedBox(height: 30),
-
-                  // Saldo
                   _buildCardSection(
-                    icon: Icons.account_balance_wallet,
-                    title: "Saldo Anda",
-                    content: "Rp $_saldo",
+                    icon: Icons.search,
+                    title: "Jumlah Barang Dihunting",
+                    content: "$_huntingCount Barang",
                     iconColor: Colors.teal,
                   ),
                   const SizedBox(height: 20),
-
-                  // Reward
                   _buildCardSection(
-                    icon: Icons.stars,
-                    title: "Poin Reward",
-                    content: "$_rewardPoints Poin",
+                    icon: Icons.star_rate,
+                    title: "Rating Hunter",
+                    content: "$_rating / 5",
                     iconColor: Colors.amber,
                   ),
                   const SizedBox(height: 30),
-
-                  // Riwayat Barang Titipan
-                  Text(
-                    "Riwayat Barang Titipan",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: colorTertiary,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-
-                  ListView.builder(
-                    itemCount: _riwayatBarangTitipan.length,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      final item = _riwayatBarangTitipan[index];
-                      return Card(
-                        margin: const EdgeInsets.symmetric(vertical: 8),
-                        child: ListTile(
-                          leading: const Icon(Icons.inventory_2_outlined, color: Colors.teal),
-                          title: Text(item['nama']!),
-                          subtitle: Text("Kadaluarsa: ${item['tglKadaluarsa']}"),
-                        ),
-                      );
-                    },
-                  ),
+                  _buildHuntingHistory(),
                   const SizedBox(height: 30),
-
-                  // Logout
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton.icon(
                       onPressed: () async {
                         await UserSession.clearSession();
-                        Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+                        Navigator.pushNamedAndRemoveUntil(
+                            context, '/login', (route) => false);
                       },
                       icon: const Icon(Icons.logout, color: Colors.white),
-                      label: const Text("Logout", style: TextStyle(fontSize: 18, color: Colors.white)),
+                      label: const Text("Logout",
+                          style: TextStyle(fontSize: 18, color: Colors.white)),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red.shade600,
                         padding: const EdgeInsets.symmetric(vertical: 15),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
                       ),
                     ),
                   ),
@@ -237,6 +226,43 @@ class _PenitipProfilePageState extends State<PenitipProfilePage> {
                         fontWeight: FontWeight.bold,
                         color: colorAccent)),
               ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHuntingHistory() {
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("Riwayat Hunting",
+                style: TextStyle(
+                    fontSize: 16, color: colorTertiary.withOpacity(0.7))),
+            const SizedBox(height: 10),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: _huntingHistory.length,
+              itemBuilder: (context, index) {
+                final task = _huntingHistory[index];
+                return ListTile(
+                  title: Text(task["task"]),
+                  subtitle: Text(task["status"]),
+                  trailing: task["status"] == "Sedang Dicari"
+                      ? IconButton(
+                          icon: const Icon(Icons.check, color: Colors.green),
+                          onPressed: () => _updateHuntingStatus(task["id"]),
+                        )
+                      : null,
+                );
+              },
             ),
           ],
         ),

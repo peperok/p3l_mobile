@@ -2,45 +2,33 @@ import 'package:flutter/material.dart';
 import 'package:p3lcoba/controllers/user_session.dart';
 import 'package:p3lcoba/utils/constants.dart';
 
-class PenitipProfilePage extends StatefulWidget {
-  const PenitipProfilePage({super.key});
+class KurirProfilePage extends StatefulWidget {
+  const KurirProfilePage({super.key});
 
   @override
-  State<PenitipProfilePage> createState() => _PenitipProfilePageState();
+  State<KurirProfilePage> createState() => _KurirProfilePageState();
 }
 
-class _PenitipProfilePageState extends State<PenitipProfilePage> {
-  int _rewardPoints = 180;
-  int _saldo = 125000;
-  String _badge = "Top Seller Juni";
+class _KurirProfilePageState extends State<KurirProfilePage> {
+  int _deliveryCount = 100; // Ganti dengan data pengiriman kurir
+  double _rating = 4.7; // Ganti dengan rating kurir
+  String _badge = "Top Courier"; // Ganti dengan badge untuk kurir
+  List<Map<String, dynamic>> _deliveryHistory = []; // Riwayat pengiriman
 
   bool _isLoading = true;
-
-  final List<Map<String, String>> _riwayatBarangTitipan = [
-    {
-      'nama': 'Meja Belajar Anak',
-      'tglKadaluarsa': '2026-03-10',
-    },
-    {
-      'nama': 'Set Buku Dongeng Anak',
-      'tglKadaluarsa': '2026-04-05',
-    },
-    {
-      'nama': 'Mainan Robotik Edukatif',
-      'tglKadaluarsa': '2026-05-20',
-    },
-  ];
 
   @override
   void initState() {
     super.initState();
     _fetchProfileData();
+    _fetchDeliveryHistory(); // Ambil riwayat pengiriman
   }
 
   Future<void> _fetchProfileData() async {
     setState(() => _isLoading = true);
 
     try {
+      // Simulasi loading, ganti dengan API di kemudian hari
       await Future.delayed(const Duration(seconds: 1));
     } catch (e) {
       print("Error loading profile: $e");
@@ -51,15 +39,49 @@ class _PenitipProfilePageState extends State<PenitipProfilePage> {
     }
   }
 
+  Future<void> _fetchDeliveryHistory() async {
+    setState(() => _isLoading = true);
+
+    try {
+      // Simulasi riwayat pengiriman, ganti dengan API di kemudian hari
+      await Future.delayed(const Duration(seconds: 1));
+
+      // Data riwayat pengiriman
+      _deliveryHistory = [
+        {"id": 1, "task": "Pengiriman Speaker Bluetooth Mini", "status": "Sedang Dikirim"},
+        {"id": 2, "task": "Pengiriman Jaket Hoodie Katun", "status": "Sedang Dikirim"},
+        {"id": 3, "task": "Pengiriman Meja Belajar Anak", "status": "Sedang Dikirim"},
+        {"id": 4, "task": "Pengiriman Set Buku Dongeng Anak", "status": "Sedang Dikirim"},
+        {"id": 5, "task": "Pengiriman Mainan Robotik Edukatif", "status": "Sedang Dikirim"},
+      ];
+    } catch (e) {
+      print("Error loading delivery history: $e");
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("Gagal memuat riwayat pengiriman.")));
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+
+  void _updateDeliveryStatus(int id) {
+    setState(() {
+      // Update status pengiriman berdasarkan id
+      final index = _deliveryHistory.indexWhere((task) => task["id"] == id);
+      if (index != -1) {
+        _deliveryHistory[index]["status"] = "Selesai";
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final userId = UserSession.userId?.toString();
-    final fullName = UserSession.userFullName ?? "Nama Penitip";
-    final email = UserSession.userEmail ?? "penitip@example.com";
+    final fullName = UserSession.userFullName ?? "Nama Kurir";
+    final email = UserSession.userEmail ?? "kurir@example.com";
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Profil Penitip", style: TextStyle(color: Colors.white)),
+        title: const Text("Profil Kurir", style: TextStyle(color: Colors.white)),
         backgroundColor: colorPrimary,
       ),
       backgroundColor: colorBackgroundLight,
@@ -74,7 +96,7 @@ class _PenitipProfilePageState extends State<PenitipProfilePage> {
                     child: CircleAvatar(
                       radius: 60,
                       backgroundColor: colorAccent,
-                      child: const Icon(Icons.person, size: 70, color: Colors.white),
+                      child: const Icon(Icons.delivery_dining, size: 70, color: Colors.white),
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -114,51 +136,27 @@ class _PenitipProfilePageState extends State<PenitipProfilePage> {
                   ),
                   const SizedBox(height: 30),
 
-                  // Saldo
+                  // Jumlah Pengiriman
                   _buildCardSection(
-                    icon: Icons.account_balance_wallet,
-                    title: "Saldo Anda",
-                    content: "Rp $_saldo",
-                    iconColor: Colors.teal,
+                    icon: Icons.delivery_dining,
+                    title: "Jumlah Pengiriman",
+                    content: "$_deliveryCount Pengiriman",
+                    iconColor: Colors.blueAccent,
                   ),
                   const SizedBox(height: 20),
 
-                  // Reward
+                  // Rating
                   _buildCardSection(
-                    icon: Icons.stars,
-                    title: "Poin Reward",
-                    content: "$_rewardPoints Poin",
+                    icon: Icons.star_rate,
+                    title: "Rating Kurir",
+                    content: "$_rating / 5",
                     iconColor: Colors.amber,
                   ),
                   const SizedBox(height: 30),
 
-                  // Riwayat Barang Titipan
-                  Text(
-                    "Riwayat Barang Titipan",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: colorTertiary,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
+                  // Riwayat Pengiriman
+                  _buildDeliveryHistory(),
 
-                  ListView.builder(
-                    itemCount: _riwayatBarangTitipan.length,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      final item = _riwayatBarangTitipan[index];
-                      return Card(
-                        margin: const EdgeInsets.symmetric(vertical: 8),
-                        child: ListTile(
-                          leading: const Icon(Icons.inventory_2_outlined, color: Colors.teal),
-                          title: Text(item['nama']!),
-                          subtitle: Text("Kadaluarsa: ${item['tglKadaluarsa']}"),
-                        ),
-                      );
-                    },
-                  ),
                   const SizedBox(height: 30),
 
                   // Logout
@@ -237,6 +235,43 @@ class _PenitipProfilePageState extends State<PenitipProfilePage> {
                         fontWeight: FontWeight.bold,
                         color: colorAccent)),
               ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDeliveryHistory() {
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("Riwayat Pengiriman",
+                style: TextStyle(
+                    fontSize: 16, color: colorTertiary.withOpacity(0.7))),
+            const SizedBox(height: 10),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: _deliveryHistory.length,
+              itemBuilder: (context, index) {
+                final task = _deliveryHistory[index];
+                return ListTile(
+                  title: Text(task["task"]),
+                  subtitle: Text(task["status"]),
+                  trailing: task["status"] == "Sedang Dikirim"
+                      ? IconButton(
+                          icon: const Icon(Icons.check, color: Colors.green),
+                          onPressed: () => _updateDeliveryStatus(task["id"]),
+                        )
+                      : null,
+                );
+              },
             ),
           ],
         ),
