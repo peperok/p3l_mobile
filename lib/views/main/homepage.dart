@@ -9,6 +9,10 @@ import 'package:p3lcoba/controllers/merchandise_controller.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:p3lcoba/components/informasi_umum_footer.dart';
 import 'package:p3lcoba/controllers/user_session.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:carousel_slider/carousel_controller.dart' as custom_slider;
+
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -34,6 +38,12 @@ class _HomePageState extends State<HomePage> {
     'Lain-lain',
   ];
 
+  final List<String> promoImages = [
+    'lib/assets/promo1.png',
+    'lib/assets/promo2.png',
+    'lib/assets/promo3.png',
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -43,12 +53,12 @@ class _HomePageState extends State<HomePage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
             content: Text(
-                '\${message.notification?.title}: \${message.notification?.body}')),
+                '${message.notification?.title}: ${message.notification?.body}')),
       );
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print('Opened from notification: \${message.notification?.title}');
+      print('Opened from notification: ${message.notification?.title}');
     });
   }
 
@@ -82,11 +92,11 @@ class _HomePageState extends State<HomePage> {
                         hintText: 'Search...',
                         prefixIcon: Icon(Icons.search, color: Colors.grey[600]),
                         border: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(
-                            vertical: 8, horizontal: 10),
+                        contentPadding:
+                            const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
                       ),
                       onSubmitted: (query) {
-                        print('Searching for: \$query');
+                        print('Searching for: $query');
                       },
                     ),
                   ),
@@ -117,28 +127,30 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Promo
+            // Promo Carousel
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Container(
-                height: 180,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(10),
+              child: CarouselSlider(
+                options: CarouselOptions(
+                  height: 180,
+                  autoPlay: true,
+                  enlargeCenterPage: true,
+                  viewportFraction: 0.9,
                 ),
-                child: Center(
-                  child: Text(
-                    'Promo Eksklusif untuk Member!',
-                    style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey[700]),
-                  ),
-                ),
+                items: promoImages.map((path) {
+                  return ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.asset(
+                      path,
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                    ),
+                  );
+                }).toList(),
               ),
             ),
 
-            // Tombol Top Seller
+            // Top Seller Button
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: GestureDetector(
@@ -170,7 +182,7 @@ class _HomePageState extends State<HomePage> {
             ),
             const SizedBox(height: 20),
 
-            // Kategori
+            // Category
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Row(
@@ -219,7 +231,7 @@ class _HomePageState extends State<HomePage> {
             ),
             const SizedBox(height: 20),
 
-            // Merchandise section
+            // Merchandise Section from coba.dart
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Row(
@@ -258,7 +270,7 @@ class _HomePageState extends State<HomePage> {
                   return const Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
                   return Center(
-                      child: Text('Error: \${snapshot.error}',
+                      child: Text('Error: ${snapshot.error}',
                           style: const TextStyle(color: Colors.red)));
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return const Center(
@@ -277,9 +289,9 @@ class _HomePageState extends State<HomePage> {
                         mainAxisSpacing: 10,
                         childAspectRatio: 0.75,
                       ),
-                      itemCount: merchList.length,
+                      itemCount: merchList.length.clamp(0, 2),
                       itemBuilder: (context, index) {
-                        final merch = merchList[index];
+                        final merchandise = merchList[index];
                         return Card(
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10)),
@@ -287,17 +299,19 @@ class _HomePageState extends State<HomePage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              ClipRRect(
-                                borderRadius: const BorderRadius.vertical(
-                                    top: Radius.circular(10)),
-                                child: Image.network(
-                                  merch.imageUrl,
-                                  height: 120,
-                                  width: double.infinity,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) =>
-                                      const Icon(Icons.image_not_supported,
-                                          size: 50),
+                              Expanded(
+                                child: ClipRRect(
+                                  borderRadius: const BorderRadius.vertical(
+                                      top: Radius.circular(10)),
+                                  child: Image.network(
+                                    merchandise.imageUrl,
+                                    fit: BoxFit.cover,
+                                    width: double.infinity,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return const Icon(Icons.broken_image,
+                                          size: 50);
+                                    },
+                                  ),
                                 ),
                               ),
                               Padding(
@@ -306,18 +320,49 @@ class _HomePageState extends State<HomePage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      merch.namaMerch,
+                                      merchandise.namaMerch,
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
+                                        color: colorTertiary,
                                       ),
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      'Stok: \${merch.stok}',
-                                      style: const TextStyle(fontSize: 14),
+                                      'Stok: ${merchandise.stok}',
+                                      style: TextStyle(
+                                          fontSize: 14, color: colorAccent),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    SizedBox(
+                                      width: double.infinity,
+                                      child: ElevatedButton(
+                                        onPressed: () {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                                content: Text(
+                                                    "Claimed ${merchandise.namaMerch}!")),
+                                          );
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: colorPrimary,
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 8),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                          ),
+                                        ),
+                                        child: const Text(
+                                          "CLAIM",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white),
+                                        ),
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -332,6 +377,7 @@ class _HomePageState extends State<HomePage> {
               },
             ),
 
+            // Produk Rekomendasi
             // Produk Rekomendasi
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),

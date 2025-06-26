@@ -5,8 +5,9 @@ import 'package:p3lcoba/utils/constants.dart';
 import 'package:p3lcoba/models/barang.dart'; // Import model Barang
 import 'package:p3lcoba/views/auth/login.dart';
 import 'package:p3lcoba/views/main/barang_detail_page.dart';
-
 import 'package:p3lcoba/components/informasi_umum_footer.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:carousel_slider/carousel_controller.dart' as custom_slider;
 
 
 class MainUnlogin extends StatefulWidget {
@@ -21,12 +22,18 @@ class _MainUnloginState extends State<MainUnlogin> {
     'Olahraga', 'Otomotif', 'Seni', 'Kecantikan', 'Lain-lain',
   ];
 
+  final List<String> promoImages = [
+  'lib/assets/promo1.png',
+  'lib/assets/promo2.png',
+  'lib/assets/promo3.png',
+];
+
   late Future<List<Barang>> _futureBarang; // Future untuk menampung data barang
 
   @override
   void initState() {
     super.initState();
-    _futureBarang = _fetchBarang(); // Panggil fungsi untuk mengambil data barang
+    _futureBarang = _fetchBarang(); 
   }
 
   // Fungsi untuk mengambil data barang dari backend
@@ -128,24 +135,26 @@ class _MainUnloginState extends State<MainUnlogin> {
               padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
               child: GestureDetector(
                 onTap: _navigateToLogin,
-                child: Container(
-                  height: 180,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(10),
+                child: CarouselSlider(
+                  options: CarouselOptions(
+                    height: 180,
+                    autoPlay: true,
+                    enlargeCenterPage: true,
+                    viewportFraction: 0.9,
                   ),
-                  child: Center(
-                    child: Text(
-                      'Promo Hari Ini!',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey[700],
+                  items: promoImages.map((path) {
+                    return ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.asset(
+                        path,
+                        fit: BoxFit.cover,
+                        width: double.infinity,
                       ),
-                    ),
-                  ),
+                    );
+                  }).toList(),
                 ),
               ),
+
             ),
             const SizedBox(height: 10),
             Padding(
