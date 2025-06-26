@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:p3lcoba/models/barang.dart';
 import 'package:p3lcoba/models/merch.dart';
@@ -6,13 +5,13 @@ import 'package:p3lcoba/utils/constants.dart';
 import 'package:p3lcoba/views/main/barang_detail_page.dart';
 import 'package:p3lcoba/controllers/barang_controller.dart';
 import 'package:p3lcoba/controllers/merchandise_controller.dart';
+import 'package:p3lcoba/controllers/kategori_controller.dart';
+import 'package:p3lcoba/models/kategori.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:p3lcoba/components/informasi_umum_footer.dart';
 import 'package:p3lcoba/controllers/user_session.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:carousel_slider/carousel_controller.dart' as custom_slider;
-
-
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -44,11 +43,15 @@ class _HomePageState extends State<HomePage> {
     'lib/assets/promo3.png',
   ];
 
+  late Future<List<Kategori>> _futureKategori;
+
   @override
   void initState() {
     super.initState();
     _futureMerch = MerchandiseController.getAllMerch();
     _futureBarang = BarangController.getAllBarang();
+    _futureKategori = KategoriController.getAllKategori();
+
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -92,8 +95,8 @@ class _HomePageState extends State<HomePage> {
                         hintText: 'Search...',
                         prefixIcon: Icon(Icons.search, color: Colors.grey[600]),
                         border: InputBorder.none,
-                        contentPadding:
-                            const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                        contentPadding: const EdgeInsets.symmetric(
+                            vertical: 8, horizontal: 10),
                       ),
                       onSubmitted: (query) {
                         print('Searching for: $query');
@@ -158,7 +161,8 @@ class _HomePageState extends State<HomePage> {
                   Navigator.pushNamed(context, '/top-sellers');
                 },
                 child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
                   decoration: BoxDecoration(
                     color: Colors.orange,
                     borderRadius: BorderRadius.circular(12),
@@ -464,23 +468,23 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                    "Rp ${barang.hargaBarang.toStringAsFixed(0)}",
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: colorAccent,
-                                      fontWeight: FontWeight.bold,
+                                      "Rp ${barang.hargaBarang.toStringAsFixed(0)}",
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: colorAccent,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    "Deskripsi: ${barang.descBarang}",
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.grey[600],
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      "Deskripsi: ${barang.descBarang}",
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.grey[600],
+                                      ),
                                     ),
-                                  ),
                                   ],
                                 ),
                               ),

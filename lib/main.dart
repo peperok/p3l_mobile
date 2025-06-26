@@ -14,6 +14,7 @@ import 'package:p3lcoba/views/main/merchandise.dart';
 import 'package:p3lcoba/views/main/penitip_profile_page.dart';
 import 'package:p3lcoba/views/main/kurir_profile_page.dart';
 import 'package:p3lcoba/views/main/top_seller_page.dart';
+import 'package:p3lcoba/views/main/daftar_pengiriman.dart';
 
 // import firebase
 import 'package:firebase_core/firebase_core.dart';
@@ -144,6 +145,8 @@ class MyApp extends StatelessWidget {
         '/profileHunter':(context) => const HunterProfilePage(),
         '/merchandise': (context) => const MerchandisePage(),
         '/top-sellers': (context) => TopSellerPage(),
+        '/daftar-pengiriman': (context) => const DaftarPengirimanPage(),
+
       },
     );
   }
