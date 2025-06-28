@@ -13,7 +13,7 @@ dependencies:
   http: ^1.2.2
   intl: ^0.17.0
   pdf: ^3.8.2
-  printing: ^5.5.0
+  
   image_picker: ^0.8.7+4
   path_provider: ^2.0.14
   vibration: ^2.0.1
